@@ -49,12 +49,13 @@ body{overflow-x:hidden;}
 .btnsmp:active{background:var(--blue-txt);}
 .brow{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px;}
 .pmode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
-.pmode-btn{padding:18px 10px;border-radius:var(--radius);border:2px solid var(--border);background:var(--card);cursor:pointer;text-align:center;}
+.pmode-btn{padding:18px 10px;border-radius:var(--radius);border:2px solid var(--border);background:var(--card);cursor:pointer;text-align:center;width:100%;font-family:inherit;}
 .pmode-btn.active{border-color:var(--blue);background:var(--blue-bg);}
 .pmode-num{font-size:28px;font-weight:700;color:var(--txt2);}
 .pmode-btn.active .pmode-num{color:var(--blue-txt);}
 .pmode-label{font-size:13px;color:var(--txt2);margin-top:3px;}
 .pmode-btn.active .pmode-label{color:var(--blue-txt);}
+.pmode-btn:active{transform:scale(.97);}
 .av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
 .player-section{margin-bottom:12px;}
 .player-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
@@ -136,14 +137,14 @@ body{overflow-x:hidden;}
     <div class="card">
       <div class="sec">인원 선택</div>
       <div class="pmode-grid">
-        <div class="pmode-btn active" id="mode2btn" onclick="setMode(2)">
+        <button class="pmode-btn active" id="mode2btn" onclick="setMode(2)" type="button">
           <div class="pmode-num">2인</div>
           <div class="pmode-label">1 vs 1</div>
-        </div>
-        <div class="pmode-btn" id="mode3btn" onclick="setMode(3)">
+        </button>
+        <button class="pmode-btn" id="mode3btn" onclick="setMode(3)" type="button">
           <div class="pmode-num">3인</div>
           <div class="pmode-label">1 vs 1 vs 1</div>
-        </div>
+        </button>
       </div>
     </div>
     <div class="card">
@@ -273,6 +274,7 @@ let G={mode:2,h:18,u:1000,gf:15000,cur:0,sc:[],nm:['공창섭','이태석','이�
 function initSc(){G.sc=Array.from({length:G.h},()=>Array(G.mode).fill(null));}
 
 function setMode(m){
+  if(G.mode!==m) initSc();
   G.mode=m;
   G.gasFee=-1;
   document.getElementById('mode2btn').classList.toggle('active',m===2);
@@ -445,7 +447,25 @@ function calcFinal(){
     // 최종 반영
     x2=x2.map((v,i)=>v+gasAdj[i]+capAdj[i]);
   }
-  return{raw,bn,x1,x2,k,note,gasAdj,capAdj,gasIdx};
+  // ── 반올림 오차 보정 (3인 전용) ──
+  // 기름값/상한 적용 후 합계가 목표와 ±1000원 차이 나는 경우
+  let roundAdj=Array(G.mode).fill(0);
+  if(G.mode===3){
+    let tot3=G.gf*3;
+    let sum3=x2.reduce((a,b)=>a+b,0);
+    let diff=sum3-tot3; // +1000이면 초과, -1000이면 부족
+    if(diff===1000){
+      // 합계 초과 → 1등(가장 적게 낸 사람) 1000원 차감
+      let minIdx=x2.indexOf(Math.min(...x2));
+      roundAdj[minIdx]=-1000;
+    } else if(diff===-1000){
+      // 합계 부족 → 꼴등(가장 많이 낸 사람) 1000원 추가
+      let maxIdx=x2.indexOf(Math.max(...x2));
+      roundAdj[maxIdx]=1000;
+    }
+    x2=x2.map((v,i)=>v+roundAdj[i]);
+  }
+  return{raw,bn,x1,x2,k,note,gasAdj,capAdj,gasIdx,roundAdj};
 }
 
 /* ── 예상 정산 ── */
@@ -585,8 +605,11 @@ function renderRun(){
   for(let i=0;i<G.mode;i++){
     let col=x1[i]>0?'#27500A':x1[i]<0?'#A32D2D':'#64748b';
     let estStr=est?'−'+est[i].toLocaleString()+'원':'—';
+    let gasTag=G.mode===3&&G.gasFee===i
+      ?'<span style="font-size:11px;background:#E6F1FB;color:#0C447C;border-radius:99px;padding:1px 7px;margin-left:5px;vertical-align:middle;">⛽ 기름값</span>'
+      :'';
     h+='<div class="rrow">'
-      +'<div><div style="font-size:15px;font-weight:600;">'+G.nm[i]+'</div>'
+      +'<div><div style="font-size:15px;font-weight:600;">'+G.nm[i]+gasTag+'</div>'
       +'<div style="font-size:11px;color:#94a3b8;margin-top:2px;">기본 '+raw[i].toLocaleString()+' / 성적 '+(bn[i]>=0?'+':'')+bn[i].toLocaleString()+'</div></div>'
       +'<div style="text-align:right;">'
         +'<div style="font-size:13px;color:'+col+';font-weight:600;">비용지수 '+x1[i].toLocaleString()+'</div>'
@@ -605,7 +628,7 @@ function prevH(){if(G.cur>0){G.cur--;renderHole();saveState();}}
 function nextH(){if(G.cur<G.h-1){G.cur++;renderHole();saveState();}}
 
 function renderResult(){
-  let {raw,bn,x1,x2,k,note,gasAdj,capAdj,gasIdx}=calcFinal();
+  let {raw,bn,x1,x2,k,note,gasAdj,capAdj,gasIdx,roundAdj}=calcFinal();
   let sgrid=document.getElementById('scards');
   sgrid.className='sgrid '+(G.mode===2?'sgrid-2':'sgrid-3');
   sgrid.innerHTML=G.nm.slice(0,G.mode).map((nm,i)=>
@@ -673,6 +696,23 @@ function renderResult(){
     }
   }
 
+    // 반올림 보정 단계
+    let hasRound=roundAdj&&roundAdj.some(v=>v!==0);
+    if(hasRound){
+      let stepNum=gasIdx>=0&&capAdj.some(v=>v!==0)?6:gasIdx>=0||capAdj.some(v=>v!==0)?5:4;
+      let tot3=G.gf*3;
+      let prevSum=x2.map((v,i)=>v-roundAdj[i]).reduce((a,b)=>a+b,0);
+      let diff=prevSum-tot3;
+      ch+='<div class="cstep"><div class="cstep-title">'+stepNum+'단계 · 합계 보정</div>';
+      if(diff>0) ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">합계 '+prevSum.toLocaleString()+'원 → 목표보다 '+diff.toLocaleString()+'원 초과 · 1등 차감</div>';
+      else ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">합계 '+prevSum.toLocaleString()+'원 → 목표보다 '+Math.abs(diff).toLocaleString()+'원 부족 · 꼴등 추가</div>';
+      for(let i=0;i<3;i++){
+        if(roundAdj[i]===0) continue;
+        ch+='<div class="crow"><span>'+G.nm[i]+'</span><span style="color:'+(roundAdj[i]<0?'#27500A':'#A32D2D')+'">'+(roundAdj[i]>0?'+':'')+roundAdj[i].toLocaleString()+'원</span></div>';
+      }
+      ch+='</div>';
+    }
+  }
   // 최종
   ch+='<div class="cstep" style="background:var(--bg);border-radius:var(--radius-sm);padding:10px 12px;margin-top:4px;">';
   for(let i=0;i<G.mode;i++) ch+='<div class="crow tot"><span>'+G.nm[i]+' 최종</span><span style="color:#A32D2D;">−'+x2[i].toLocaleString()+'원</span></div>';
