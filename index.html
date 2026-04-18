@@ -271,10 +271,10 @@ function startGame(){
   G.nm[1]=document.getElementById('p2name').value||'이태석';
   G.gf=parseInt(document.getElementById('gf').value)||0;
   document.getElementById('topbar-sub').textContent=G.nm[0]+' vs '+G.nm[1];
-  initSc();G.cur=0;showP('pg-score');renderHole();
+  initSc();G.cur=0;showP('pg-score');renderHole();saveState('pg-score');
 }
-function goResult(){renderResult();showP('pg-result');}
-function resetGame(){initSc();document.getElementById('topbar-sub').textContent='2인 게임';showP('pg-setup');}
+function goResult(){renderResult();showP('pg-result');saveState('pg-result');}
+function resetGame(){initSc();clearState();document.getElementById('topbar-sub').textContent='2인 게임';showP('pg-setup');}
 
 function renderPB(p){
   let sel=G.sc[G.cur][p];
@@ -347,7 +347,51 @@ function renderST(){
   document.getElementById('scoretable').innerHTML=h;
 }
 
-function setSc(p,v){G.sc[G.cur][p]=v;renderHole();}
+function saveState(page){
+  try{
+    localStorage.setItem('golf_state', JSON.stringify({
+      G: G,
+      page: page || currentPage()
+    }));
+  }catch(e){}
+}
+function currentPage(){
+  let pages=['pg-setup','pg-score','pg-result'];
+  for(let p of pages){
+    if(document.getElementById(p).classList.contains('active')) return p;
+  }
+  return 'pg-setup';
+}
+function loadState(){
+  try{
+    let raw=localStorage.getItem('golf_state');
+    if(!raw) return false;
+    let saved=JSON.parse(raw);
+    if(!saved||!saved.G) return false;
+    G=saved.G;
+    document.getElementById('p1name').value=G.nm[0];
+    document.getElementById('p2name').value=G.nm[1];
+    document.getElementById('gf').value=G.gf;
+    document.getElementById('hd').textContent=G.h+'홀';
+    document.getElementById('ud').textContent=G.u.toLocaleString()+'원';
+    updI();
+    if(saved.page==='pg-score'){
+      document.getElementById('topbar-sub').textContent=G.nm[0]+' vs '+G.nm[1];
+      showP('pg-score');
+      renderHole();
+    } else if(saved.page==='pg-result'){
+      document.getElementById('topbar-sub').textContent=G.nm[0]+' vs '+G.nm[1];
+      renderResult();
+      showP('pg-result');
+    }
+    return true;
+  }catch(e){return false;}
+}
+function clearState(){
+  try{localStorage.removeItem('golf_state');}catch(e){}
+}
+
+function setSc(p,v){G.sc[G.cur][p]=v;renderHole();saveState();}
 function renderHole(){
   document.getElementById('htitle').textContent='홀 '+(G.cur+1)+' / '+G.h;
   renderPB(0);renderPB(1);renderSD();renderVerd();renderST();renderRun();
@@ -404,8 +448,8 @@ function renderRun(){
   document.getElementById('rtotal').innerHTML=h;
 }
 
-function prevH(){if(G.cur>0){G.cur--;renderHole();}}
-function nextH(){if(G.cur<G.h-1){G.cur++;renderHole();}}
+function prevH(){if(G.cur>0){G.cur--;renderHole();saveState();}}
+function nextH(){if(G.cur<G.h-1){G.cur++;renderHole();saveState();}}
 
 function renderResult(){
   let {raw,bn,x1,x2,k,note}=calcFinal();
@@ -458,7 +502,7 @@ function renderResult(){
   document.getElementById('hbdown').innerHTML=bh;
 }
 
-initSc();updI();
+if(!loadState()){initSc();updI();}
 </script>
 </body>
 </html>
