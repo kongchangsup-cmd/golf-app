@@ -80,11 +80,11 @@ body{overflow-x:hidden;}
 .player-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .pname{font-size:15px;font-weight:700;color:var(--txt);}
 
-.score-btn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
-.scbtn{padding:11px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);cursor:pointer;text-align:center;line-height:1.4;transition:transform .1s;}
+.score-btn-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.scbtn{padding:8px 2px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);cursor:pointer;text-align:center;line-height:1.3;transition:transform .1s;}
 .scbtn:active{transform:scale(.95);}
-.scbtn-name{font-size:13px;font-weight:600;color:var(--txt2);}
-.scbtn-val{font-size:11px;display:block;margin-top:2px;color:var(--txt3);}
+.scbtn-name{font-size:12px;font-weight:600;color:var(--txt2);}
+.scbtn-val{font-size:10px;display:block;margin-top:1px;color:var(--txt3);}
 
 .sel-alb,.sel-eag{background:var(--blue-bg);border-color:var(--blue);}.sel-alb .scbtn-name,.sel-eag .scbtn-name{color:var(--blue-txt);}.sel-alb .scbtn-val,.sel-eag .scbtn-val{color:var(--blue);}
 .sel-bir{background:var(--green-bg);border-color:var(--green);}.sel-bir .scbtn-name{color:var(--green-txt);}.sel-bir .scbtn-val{color:var(--green);}
@@ -238,7 +238,6 @@ body{overflow-x:hidden;}
 
 <script>
 const LV=[
-  {label:'알바트로스',val:-3,cls:'sel-alb',short:'알바'},
   {label:'이글',val:-2,cls:'sel-eag',short:'이글'},
   {label:'버디',val:-1,cls:'sel-bir',short:'버디'},
   {label:'파',val:0,cls:'sel-par',short:'파'},
@@ -435,16 +434,40 @@ function calcFinal(){
 function renderRun(){
   let raw=calcRaw(),bn=calcBonus();
   let played=G.sc.filter(s=>s[0]!==null&&s[1]!==null).length;
-  let h='<div style="font-size:12px;color:#64748b;margin-bottom:8px;">'+played+'홀 완료 · 남은 '+(G.h-played)+'홀</div>';
+  let x1=[raw[0]+bn[0],raw[1]+bn[1]];
+  let tot=G.gf*2;
+
+  let est=[null,null];
+  if(played>0){
+    if(x1[0]<=0&&x1[1]<=0){est=[r1k(tot/2),r1k(tot/2)];}
+    else if(x1[0]<=0){est=[0,tot];}
+    else if(x1[1]<=0){est=[tot,0];}
+    else{let k=tot/(x1[0]+x1[1]);est=[r1k(x1[0]*k),r1k(x1[1]*k)];}
+  }
+
+  let h='<div style="font-size:12px;color:#64748b;margin-bottom:10px;">'+played+'홀 완료 · 남은 '+(G.h-played)+'홀</div>';
+
   [0,1].forEach(i=>{
-    let x1=raw[i]+bn[i];
-    let col=x1>0?'#27500A':x1<0?'#A32D2D':'#64748b';
-    h+='<div class="rrow"><span style="font-size:15px;">'+G.nm[i]+'</span>'
+    let col=x1[i]>0?'#27500A':x1[i]<0?'#A32D2D':'#64748b';
+    let estStr=est[i]!==null?'−'+est[i].toLocaleString()+'원':'—';
+    h+='<div class="rrow">'
+      +'<div>'
+        +'<div style="font-size:15px;font-weight:600;color:#1e293b;">'+G.nm[i]+'</div>'
+        +'<div style="font-size:11px;color:#94a3b8;margin-top:2px;">기본 '+raw[i].toLocaleString()+' / 성적 '+(bn[i]>=0?'+':'')+bn[i].toLocaleString()+'</div>'
+      +'</div>'
       +'<div style="text-align:right;">'
-        +'<div style="font-size:15px;font-weight:700;color:'+col+';">'+x1.toLocaleString()+'원</div>'
-        +'<div style="font-size:11px;color:#94a3b8;">기본 '+raw[i].toLocaleString()+' / 성적 '+(bn[i]>=0?'+':'')+bn[i].toLocaleString()+'</div>'
-      +'</div></div>';
+        +'<div style="font-size:13px;color:'+col+';font-weight:600;">비용지수 '+x1[i].toLocaleString()+'</div>'
+        +'<div style="font-size:16px;font-weight:700;color:#A32D2D;margin-top:2px;">'+estStr+'</div>'
+        +'<div style="font-size:10px;color:#94a3b8;margin-top:1px;">현재 기준 예상 정산</div>'
+      +'</div>'
+    +'</div>';
   });
+
+  if(played>0){
+    h+='<div style="margin-top:8px;padding:8px 10px;background:#f0f7ff;border-radius:6px;font-size:12px;color:#185FA5;">'
+      +'예상 합계 '+(est[0]+est[1]).toLocaleString()+'원 · 인당 게임비 '+G.gf.toLocaleString()+'원 기준</div>';
+  }
+
   document.getElementById('rtotal').innerHTML=h;
 }
 
