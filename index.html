@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#185FA5"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="골프정산"/>
 <title>골프 정산</title>
 <style>
@@ -34,16 +33,16 @@ body{overflow-x:hidden;}
 .frow:last-child{border-bottom:none;}
 .flabel{font-size:15px;color:var(--txt);}
 .fsub{font-size:12px;color:var(--txt3);margin-top:2px;}
-.finput{font-size:15px;text-align:right;width:130px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--txt);}
+.finput{font-size:15px;text-align:right;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--txt);}
 .finput:focus{outline:none;border-color:var(--blue);}
 .nrow{display:flex;align-items:center;gap:10px;}
 .nbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border2);background:var(--card);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt);line-height:1;}
 .nbtn:active{background:var(--bg);}
 .nval{font-size:15px;font-weight:600;min-width:58px;text-align:center;color:var(--txt);}
 .ibox{background:var(--blue-bg);border-radius:var(--radius-sm);padding:10px 13px;font-size:13px;color:var(--blue-txt);margin-bottom:14px;line-height:1.6;}
-.btn-full{width:100%;padding:15px;font-size:16px;font-weight:700;border-radius:var(--radius);border:none;cursor:pointer;background:var(--blue);color:#fff;letter-spacing:.02em;}
+.btn-full{width:100%;padding:15px;font-size:16px;font-weight:700;border-radius:var(--radius);border:none;cursor:pointer;background:var(--blue);color:#fff;letter-spacing:.02em;font-family:inherit;}
 .btn-full:active{background:var(--blue-txt);}
-.btnsm{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border2);background:var(--card);color:var(--txt);font-weight:500;}
+.btnsm{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border2);background:var(--card);color:var(--txt);font-weight:500;font-family:inherit;}
 .btnsm:active{background:var(--bg);}
 .btnsmp{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:600;}
 .btnsmp:active{background:var(--blue-txt);}
@@ -51,17 +50,22 @@ body{overflow-x:hidden;}
 .pmode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
 .pmode-btn{padding:18px 10px;border-radius:var(--radius);border:2px solid var(--border);background:var(--card);cursor:pointer;text-align:center;width:100%;font-family:inherit;}
 .pmode-btn.active{border-color:var(--blue);background:var(--blue-bg);}
+.pmode-btn:active{transform:scale(.97);}
 .pmode-num{font-size:28px;font-weight:700;color:var(--txt2);}
 .pmode-btn.active .pmode-num{color:var(--blue-txt);}
 .pmode-label{font-size:13px;color:var(--txt2);margin-top:3px;}
 .pmode-btn.active .pmode-label{color:var(--blue-txt);}
-.pmode-btn:active{transform:scale(.97);}
-.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.prow{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);}
+.prow:last-child{border-bottom:none;}
+.pavt{display:inline-flex;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:700;align-items:center;justify-content:center;flex-shrink:0;}
+.gas-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;}
+.gas-btn:active{transform:scale(.92);}
+.gas-btn.on{background:var(--blue-bg);border-color:var(--blue);}
 .player-section{margin-bottom:12px;}
 .player-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .pname{font-size:15px;font-weight:700;color:var(--txt);}
 .score-btn-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
-.scbtn{padding:8px 2px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);cursor:pointer;text-align:center;line-height:1.3;transition:transform .1s;}
+.scbtn{padding:5px 2px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);cursor:pointer;text-align:center;line-height:1.3;font-family:inherit;}
 .scbtn:active{transform:scale(.95);}
 .scbtn-name{font-size:12px;font-weight:600;color:var(--txt2);}
 .scbtn-val{font-size:10px;display:block;margin-top:1px;color:var(--txt3);}
@@ -77,7 +81,7 @@ body{overflow-x:hidden;}
 .sdcol{flex:1;padding:8px 4px;text-align:center;border-right:1px solid var(--border);}
 .sdcol:last-child{border-right:none;}
 .verdict-box{text-align:center;padding:6px 0 2px;min-height:32px;}
-.badge{display:inline-block;font-size:12px;padding:4px 8px;border-radius:99px;font-weight:600;margin:2px 2px;}
+.badge{display:inline-block;font-size:12px;padding:4px 8px;border-radius:99px;font-weight:600;margin:2px;}
 .bw{background:var(--green-bg);color:var(--green-txt);}
 .bd{background:#F1EFE8;color:#444441;}
 .b2{background:var(--amber-bg);color:var(--amber-txt);}
@@ -92,7 +96,7 @@ body{overflow-x:hidden;}
 .score-table td:first-child{text-align:left;padding-left:0;font-size:11px;}
 .score-table tr:last-child td{border-bottom:none;}
 .cur-row td{background:#f0f7ff;}
-.sum-row td{background:var(--bg);border-bottom:2px solid var(--border2) !important;font-weight:600;}
+.sum-row td{background:var(--bg);border-bottom:2px solid var(--border2)!important;font-weight:600;}
 .sc-chip{display:inline-block;font-size:11px;padding:2px 5px;border-radius:99px;font-weight:600;}
 .chip-neg2{background:var(--blue-bg);color:var(--blue-txt);}
 .chip-neg1{background:var(--green-bg);color:var(--green-txt);}
@@ -119,9 +123,6 @@ body{overflow-x:hidden;}
 .cstep{padding:9px 0;border-bottom:1px solid var(--border);}
 .cstep:last-child{border-bottom:none;}
 .cstep-title{font-size:12px;color:var(--txt2);margin-bottom:7px;font-weight:600;}
-.gas-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .1s;}
-.gas-btn:active{transform:scale(.92);}
-.gas-btn.on{background:#E6F1FB;border-color:var(--blue);}
 </style>
 </head>
 <body>
@@ -149,27 +150,21 @@ body{overflow-x:hidden;}
     </div>
     <div class="card">
       <div class="sec">플레이어</div>
-      <div id="gasfee-hint" style="display:none;font-size:12px;color:var(--txt3);margin-bottom:10px;padding:8px 10px;background:var(--blue-bg);border-radius:var(--radius-sm);color:var(--blue-txt);">⛽ 멀리서 오는 플레이어 이름 옆 버튼을 눌러 기름값 체크</div>
-      <div class="frow">
-        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
-          <span style="display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--blue-bg);color:var(--blue-txt);font-size:10px;font-weight:700;align-items:center;justify-content:center;flex-shrink:0;">P1</span>
-          <input class="finput" id="p1name" type="text" value="공창섭" maxlength="8" style="flex:1;width:auto;"/>
-          <button id="gascheck0" class="gas-btn" onclick="toggleGas(0)" style="display:none;">⛽</button>
-        </div>
+      <div id="gasfee-hint" style="display:none;font-size:12px;padding:8px 10px;background:var(--blue-bg);border-radius:var(--radius-sm);color:var(--blue-txt);margin-bottom:10px;">⛽ 멀리서 오는 플레이어 이름 옆 버튼을 눌러 기름값 체크</div>
+      <div class="prow">
+        <span class="pavt" style="background:var(--blue-bg);color:var(--blue-txt);">P1</span>
+        <input class="finput" id="p1name" type="text" value="공창섭" maxlength="8" style="flex:1;width:auto;"/>
+        <button id="gascheck0" class="gas-btn" onclick="toggleGas(0)" type="button" style="display:none;">⛽</button>
       </div>
-      <div class="frow">
-        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
-          <span style="display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--purple-bg);color:var(--purple-txt);font-size:10px;font-weight:700;align-items:center;justify-content:center;flex-shrink:0;">P2</span>
-          <input class="finput" id="p2name" type="text" value="이태석" maxlength="8" style="flex:1;width:auto;" data-default2="이태석" data-default3=""/>
-          <button id="gascheck1" class="gas-btn" onclick="toggleGas(1)" style="display:none;">⛽</button>
-        </div>
+      <div class="prow">
+        <span class="pavt" style="background:var(--purple-bg);color:var(--purple-txt);">P2</span>
+        <input class="finput" id="p2name" type="text" value="이태석" maxlength="8" style="flex:1;width:auto;"/>
+        <button id="gascheck1" class="gas-btn" onclick="toggleGas(1)" type="button" style="display:none;">⛽</button>
       </div>
-      <div class="frow" id="p3row" style="display:none;">
-        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
-          <span style="display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--teal-bg);color:var(--teal-txt);font-size:10px;font-weight:700;align-items:center;justify-content:center;flex-shrink:0;">P3</span>
-          <input class="finput" id="p3name" type="text" value="이태석" maxlength="8" style="flex:1;width:auto;"/>
-          <button id="gascheck2" class="gas-btn" onclick="toggleGas(2)" style="display:none;">⛽</button>
-        </div>
+      <div class="prow" id="p3row" style="display:none;">
+        <span class="pavt" style="background:var(--teal-bg);color:var(--teal-txt);">P3</span>
+        <input class="finput" id="p3name" type="text" value="이태석" maxlength="8" style="flex:1;width:auto;"/>
+        <button id="gascheck2" class="gas-btn" onclick="toggleGas(2)" type="button" style="display:none;">⛽</button>
       </div>
     </div>
     <div class="card">
@@ -177,26 +172,26 @@ body{overflow-x:hidden;}
       <div class="frow">
         <div class="flabel">홀 수</div>
         <div class="nrow">
-          <button class="nbtn" onclick="chH(-9)">−</button>
+          <button class="nbtn" onclick="chH(-9)" type="button">−</button>
           <span class="nval" id="hd">18홀</span>
-          <button class="nbtn" onclick="chH(9)">+</button>
+          <button class="nbtn" onclick="chH(9)" type="button">+</button>
         </div>
       </div>
       <div class="frow">
         <div><div class="flabel">홀당 기준금액</div><div class="fsub" id="unit-sub">패자 부담 / 비길 때 각자</div></div>
         <div class="nrow">
-          <button class="nbtn" onclick="chU(-500)">−</button>
+          <button class="nbtn" onclick="chU(-500)" type="button">−</button>
           <span class="nval" id="ud">1,000원</span>
-          <button class="nbtn" onclick="chU(500)">+</button>
+          <button class="nbtn" onclick="chU(500)" type="button">+</button>
         </div>
       </div>
       <div class="frow">
         <div><div class="flabel">인당 게임비</div><div class="fsub">게임장 이용 비용</div></div>
-        <input class="finput" id="gf" type="number" value="15000" min="0" step="1000"/>
+        <input class="finput" id="gf" type="number" value="15000" min="0" step="1000" style="width:130px;"/>
       </div>
     </div>
     <div class="ibox" id="ibox"></div>
-    <button class="btn-full" onclick="startGame()">게임 시작</button>
+    <button class="btn-full" onclick="startGame()" type="button">게임 시작</button>
   </div>
 
   <!-- PAGE 2: 스코어 입력 -->
@@ -204,9 +199,9 @@ body{overflow-x:hidden;}
     <div style="height:12px;"></div>
     <div class="card">
       <div class="hnav">
-        <button class="btnsm" onclick="prevH()">← 이전</button>
+        <button class="btnsm" onclick="prevH()" type="button">← 이전</button>
         <span class="htitle" id="htitle">홀 1</span>
-        <button class="btnsm" onclick="nextH()">다음 →</button>
+        <button class="btnsm" onclick="nextH()" type="button">다음 →</button>
       </div>
       <div id="score-inputs"></div>
       <div class="sdisplay" id="sdisplay"></div>
@@ -221,8 +216,8 @@ body{overflow-x:hidden;}
       <div id="rtotal"></div>
     </div>
     <div class="brow">
-      <button class="btnsm" onclick="showP('pg-setup')">← 설정</button>
-      <button class="btnsm btnsmp" onclick="goResult()">최종 정산 →</button>
+      <button class="btnsm" onclick="showP('pg-setup')" type="button">← 설정</button>
+      <button class="btnsm btnsmp" onclick="goResult()" type="button">최종 정산 →</button>
     </div>
   </div>
 
@@ -239,8 +234,8 @@ body{overflow-x:hidden;}
       <div id="hbdown"></div>
     </div>
     <div class="brow">
-      <button class="btnsm" onclick="showP('pg-score')">← 스코어</button>
-      <button class="btnsm" onclick="resetGame()">새 게임</button>
+      <button class="btnsm" onclick="showP('pg-score')" type="button">← 스코어</button>
+      <button class="btnsm" onclick="resetGame()" type="button">새 게임</button>
     </div>
   </div>
 </div>
@@ -274,20 +269,18 @@ let G={mode:2,h:18,u:1000,gf:15000,cur:0,sc:[],nm:['공창섭','이태석','이�
 function initSc(){G.sc=Array.from({length:G.h},()=>Array(G.mode).fill(null));}
 
 function setMode(m){
-  if(G.mode!==m) initSc();
   G.mode=m;
   G.gasFee=-1;
   document.getElementById('mode2btn').classList.toggle('active',m===2);
   document.getElementById('mode3btn').classList.toggle('active',m===3);
-  document.getElementById('p3row').style.display=m===3?'':'none';
-  document.getElementById('gasfee-hint').style.display=m===3?'':'none';
+  document.getElementById('p3row').style.display=m===3?'flex':'none';
+  document.getElementById('gasfee-hint').style.display=m===3?'block':'none';
   let p2=document.getElementById('p2name');
   if(m===2&&p2.value==='') p2.value='이태석';
   if(m===3&&p2.value==='이태석') p2.value='';
   document.getElementById('unit-sub').textContent=m===2
     ?'패자 부담 / 비길 때 각자'
     :'1등 0원 / 2등 기준금액 / 3등 2배';
-  // 기름값 버튼 show/hide
   for(let p=0;p<3;p++){
     let el=document.getElementById('gascheck'+p);
     if(el) el.style.display=m===3?'flex':'none';
@@ -295,18 +288,26 @@ function setMode(m){
   updateGasUI();
   updI();
 }
+
 function toggleGas(i){
-  G.gasFee=G.gasFee===i?-1:i;
+  G.gasFee=(G.gasFee===i)?-1:i;
   updateGasUI();
 }
+
 function updateGasUI(){
   for(let p=0;p<3;p++){
     let el=document.getElementById('gascheck'+p);
     if(!el) continue;
-    el.classList.toggle('on', G.gasFee===p);
-    el.textContent=G.gasFee===p?'✓':'⛽';
+    if(G.gasFee===p){
+      el.classList.add('on');
+      el.textContent='✓';
+    } else {
+      el.classList.remove('on');
+      el.textContent='⛽';
+    }
   }
 }
+
 function chH(d){let v=G.h+d;if(v<9)v=9;if(v>18)v=18;G.h=v;document.getElementById('hd').textContent=v+'홀';updI();}
 function chU(d){let v=G.u+d;if(v<500)v=500;if(v>10000)v=10000;G.u=v;document.getElementById('ud').textContent=v.toLocaleString()+'원';updI();}
 function updI(){
@@ -314,6 +315,7 @@ function updI(){
     ?'홀당 '+G.u.toLocaleString()+'원 · '+G.h+'홀 · 성적 보너스 반영 후 게임비 비율 배분'
     :'1등 0원 / 2등 '+G.u.toLocaleString()+'원 / 3등 '+(G.u*2).toLocaleString()+'원 · '+G.h+'홀 · 성적 보너스 반영 후 게임비 비율 배분';
 }
+
 function showP(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -322,7 +324,7 @@ function showP(id){
 
 function startGame(){
   G.nm[0]=document.getElementById('p1name').value||'공창섭';
-  G.nm[1]=document.getElementById('p2name').value||(G.mode===3?'':' 이태석');
+  G.nm[1]=document.getElementById('p2name').value||'이태석';
   if(G.mode===3) G.nm[2]=document.getElementById('p3name').value||'이태석';
   G.gf=parseInt(document.getElementById('gf').value)||0;
   document.getElementById('topbar-sub').textContent=G.nm.slice(0,G.mode).join(' · ');
@@ -333,33 +335,18 @@ function resetGame(){initSc();clearState();document.getElementById('topbar-sub')
 
 /* ── 홀별 금액 계산 ── */
 function holeAmounts(row){
-  let n=G.mode;
   if(row.some(v=>v===null)) return null;
-  if(n===2){
+  if(G.mode===2){
     let [a,b]=row;
     if(a===b) return [G.u,G.u];
     return a<b?[0,G.u]:[G.u,0];
   }
-  // 3인 규칙
-  // 전원 동타 → 각 u
-  // 1등 1명, 공동 2등 2명 → 0, u, u
-  // 공동 1등 2명, 꼴등 1명 → 0, 0, 2u
-  // 1/2/3등 각 1명 → 0, u, 2u
+  // 3인: 전원동타=각u, 공동1등2명=0/0/2u, 1등1명공동2등=0/u/u, 1/2/3등=0/u/2u
   let [a,b,c]=row;
-  let min=Math.min(a,b,c),max=Math.max(a,b,c);
-  // 전원 동타
   if(a===b&&b===c) return [G.u,G.u,G.u];
-  // 공동 1등 2명, 꼴등 1명
-  let top2=[a,b,c].filter(v=>v===min);
-  if(top2.length===2){
-    return row.map(v=>v===min?0:G.u*2);
-  }
-  // 1등 1명, 공동 2등 2명 (나머지 둘이 같음)
-  let bot2=[a,b,c].filter(v=>v===max);
-  if(bot2.length===2){
-    return row.map(v=>v===min?0:G.u);
-  }
-  // 전원 다름: 0, u, 2u
+  let mn=Math.min(a,b,c),mx=Math.max(a,b,c);
+  if(row.filter(v=>v===mn).length===2) return row.map(v=>v===mn?0:G.u*2);
+  if(row.filter(v=>v===mx).length===2) return row.map(v=>v===mx?G.u:0);
   let sorted=[...row].sort((x,y)=>x-y);
   return row.map(v=>sorted.indexOf(v)*G.u);
 }
@@ -390,14 +377,23 @@ function calcRaw(){
   return r;
 }
 
+/* ── 총타수 계산 ── */
+function totalScores(){
+  return Array.from({length:G.mode},(_,p)=>{
+    let s=0;
+    for(let i=0;i<G.h;i++) if(G.sc[i][p]!==null) s+=G.sc[i][p];
+    return s;
+  });
+}
+
 /* ── 최종 게임비 배분 ── */
 function calcFinal(){
-  let raw=calcRaw(),bn=calcBonus();
+  let raw=calcRaw(), bn=calcBonus();
   let x1=raw.map((r,i)=>r+bn[i]);
   let tot=G.gf*G.mode;
+
   // 기본 배분
-  let x2;
-  let k=null,note='normal';
+  let x2, k=null, note='normal';
   if(x1.every(v=>v<=0)){
     x2=Array(G.mode).fill(r1k(tot/G.mode)); note='even';
   } else {
@@ -410,10 +406,13 @@ function calcFinal(){
       x2=x1.map(v=>r1k(v*k));
     }
   }
+
   // 3인 추가 조정
   let gasAdj=Array(G.mode).fill(0);
   let capAdj=Array(G.mode).fill(0);
+  let roundAdj=Array(G.mode).fill(0);
   let gasIdx=-1;
+
   if(G.mode===3){
     // ① 기름값 보상
     if(G.gasFee>=0&&G.gasFee<3){
@@ -421,59 +420,45 @@ function calcFinal(){
       gasAdj[gasIdx]=-2000;
       for(let p=0;p<3;p++) if(p!==gasIdx) gasAdj[p]=1000;
     }
-    // 기름값 반영 후 임시 금액
+
+    // ② 기름값 반영 후 30,000원 상한 적용
     let tmp=x2.map((v,i)=>v+gasAdj[i]);
-    // ② 30,000원 상한 + 초과 재배분
     let CAP=30000;
     let overIdx=tmp.findIndex(v=>v>CAP);
     if(overIdx>=0){
-      let over=tmp[overIdx]-CAP; // 초과금 (1000단위)
-      capAdj[overIdx]=CAP-x2[overIdx]-gasAdj[overIdx]; // 상한까지만
-      // 초과금을 나머지 2명 중 총타수 높은 순으로 배분
+      let over=tmp[overIdx]-CAP;
+      capAdj[overIdx]=-(tmp[overIdx]-CAP);
       let others=[0,1,2].filter(p=>p!==overIdx);
-      // 총타수 계산
-      let totalScore=others.map(p=>{
-        let s=0,cnt=0;
-        for(let i=0;i<G.h;i++) if(G.sc[i][p]!==null){s+=G.sc[i][p];cnt++;}
-        return {p, score:cnt>0?s:0};
-      }).sort((a,b)=>b.score-a.score); // 높은 타수 먼저
-      // 초과금을 1000원씩 타수 높은 사람에게 먼저
+      let ts=totalScores();
+      let sorted=others.map(p=>({p,s:ts[p]})).sort((a,b)=>b.s-a.s);
       let chunks=Math.round(over/1000);
-      for(let c=0;c<chunks;c++){
-        let who=totalScore[c%2].p;
-        capAdj[who]+=1000;
-      }
+      for(let c=0;c<chunks;c++) capAdj[sorted[c%2].p]+=1000;
     }
-    // 최종 반영
+
+    // ③ 최종 반영
     x2=x2.map((v,i)=>v+gasAdj[i]+capAdj[i]);
-  }
-  // ── 반올림 오차 보정 (3인 전용) ──
-  // 기름값/상한 적용 후 합계가 목표와 ±1000원 차이 나는 경우
-  let roundAdj=Array(G.mode).fill(0);
-  if(G.mode===3){
-    let tot3=G.gf*3;
+
+    // ④ 반올림 오차 보정
     let sum3=x2.reduce((a,b)=>a+b,0);
-    let diff=sum3-tot3; // +1000이면 초과, -1000이면 부족
+    let diff=sum3-(G.gf*3);
     if(diff===1000){
-      // 합계 초과 → 1등(가장 적게 낸 사람) 1000원 차감
       let minIdx=x2.indexOf(Math.min(...x2));
       roundAdj[minIdx]=-1000;
     } else if(diff===-1000){
-      // 합계 부족 → 꼴등(가장 많이 낸 사람) 1000원 추가
       let maxIdx=x2.indexOf(Math.max(...x2));
       roundAdj[maxIdx]=1000;
     }
     x2=x2.map((v,i)=>v+roundAdj[i]);
   }
-  return{raw,bn,x1,x2,k,note,gasAdj,capAdj,gasIdx,roundAdj};
+
+  return {raw,bn,x1,x2,k,note,gasAdj,capAdj,gasIdx,roundAdj};
 }
 
 /* ── 예상 정산 ── */
 function calcEst(){
-  let {x2}=calcFinal();
   let played=G.sc.filter(s=>s.every(v=>v!==null)).length;
   if(played===0) return null;
-  return x2;
+  return calcFinal().x2;
 }
 
 /* ── 렌더링 ── */
@@ -483,12 +468,12 @@ function renderInputs(){
     let sel=G.sc[G.cur][p];
     h+='<div class="player-section">'
       +'<div class="player-header">'
-      +'<div class="av" style="'+AV_STYLE[p]+'">P'+(p+1)+'</div>'
+      +'<div class="av" style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;'+AV_STYLE[p]+'">P'+(p+1)+'</div>'
       +'<span class="pname">'+G.nm[p]+'</span>'
       +'</div><div class="score-btn-grid">';
     LV.forEach(lv=>{
       let ac=sel===lv.val?lv.cls:'';
-      h+='<button class="scbtn '+ac+'" onclick="setSc('+p+','+lv.val+')">'
+      h+='<button class="scbtn '+ac+'" onclick="setSc('+p+','+lv.val+')" type="button">'
         +'<span class="scbtn-name">'+lv.label+'</span>'
         +'<span class="scbtn-val">'+dv(lv.val)+'</span></button>';
     });
@@ -533,8 +518,7 @@ function renderVerd(){
     if(amt[0]===amt[1]) h='<span class="badge bd">비김 · 각 '+G.u.toLocaleString()+'원</span>';
     else{
       let w=amt[0]===0?0:1,l=1-w;
-      h='<span class="badge bw">'+G.nm[w]+' 승</span>'
-        +'<span class="badge b3">'+G.nm[l]+' '+G.u.toLocaleString()+'원</span>';
+      h='<span class="badge bw">'+G.nm[w]+' 승</span><span class="badge b3">'+G.nm[l]+' '+G.u.toLocaleString()+'원</span>';
     }
   } else {
     for(let p=0;p<3;p++){
@@ -556,19 +540,17 @@ function renderST(){
   }
   let h='<table class="score-table"><thead><tr><th>홀</th>';
   for(let p=0;p<G.mode;p++) h+='<th>'+G.nm[p]+'</th>';
-  if(G.mode===3) h+='<th>순위</th>';
-  else h+='<th>결과</th>';
-  h+='</tr></thead><tbody>';
+  h+=(G.mode===3?'<th>순위</th>':'<th>결과</th>')+'</tr></thead><tbody>';
 
   h+='<tr class="sum-row"><td>합계</td>';
   for(let p=0;p<G.mode;p++){
-    let d=has[p]?dv(sum[p]):'—',c=has[p]?sc(sum[p]):'#94a3b8';
+    let d=has[p]?dv(sum[p]):'—', c=has[p]?sc(sum[p]):'#94a3b8';
     h+='<td><span style="font-size:13px;color:'+c+';">'+d+'</span></td>';
   }
   h+='<td></td></tr>';
 
   for(let i=0;i<G.h;i++){
-    let row=G.sc[i],ic=i===G.cur;
+    let row=G.sc[i], ic=i===G.cur;
     let amt=holeAmounts(row);
     h+='<tr'+(ic?' class="cur-row"':'')+'>'
       +'<td style="color:'+(ic?'#1e293b':'#64748b')+';font-weight:'+(ic?'700':'400')+';">'+(ic?'▶ ':'')+(i+1)+'</td>';
@@ -577,12 +559,13 @@ function renderST(){
       h+='<td>'+(v===null?'<span style="color:#94a3b8;">—</span>':'<span class="sc-chip '+cc(v)+'">'+dv(v)+'</span>')+'</td>';
     }
     let rc='';
-    if(!amt){rc='';}
-    else if(G.mode===2){
-      let w=amt[0]===0?0:1;
-      rc=amt[0]===amt[1]?'<span style="font-size:11px;color:#888;">무</span>':'<span style="font-size:11px;font-weight:600;color:#27500A;">'+G.nm[w][0]+'승</span>';
-    } else {
-      for(let p=0;p<3;p++) rc+=rankBadge(amt[p]/G.u);
+    if(amt){
+      if(G.mode===2){
+        let w=amt[0]===0?0:1;
+        rc=amt[0]===amt[1]?'<span style="font-size:11px;color:#888;">무</span>':'<span style="font-size:11px;font-weight:600;color:#27500A;">'+G.nm[w][0]+'승</span>';
+      } else {
+        for(let p=0;p<3;p++) rc+=rankBadge(amt[p]/G.u);
+      }
     }
     h+='<td>'+rc+'</td></tr>';
   }
@@ -597,7 +580,7 @@ function renderHole(){
 }
 
 function renderRun(){
-  let raw=calcRaw(),bn=calcBonus();
+  let raw=calcRaw(), bn=calcBonus();
   let played=G.sc.filter(s=>s.every(v=>v!==null)).length;
   let x1=raw.map((r,i)=>r+bn[i]);
   let est=calcEst();
@@ -605,8 +588,8 @@ function renderRun(){
   for(let i=0;i<G.mode;i++){
     let col=x1[i]>0?'#27500A':x1[i]<0?'#A32D2D':'#64748b';
     let estStr=est?'−'+est[i].toLocaleString()+'원':'—';
-    let gasTag=G.mode===3&&G.gasFee===i
-      ?'<span style="font-size:11px;background:#E6F1FB;color:#0C447C;border-radius:99px;padding:1px 7px;margin-left:5px;vertical-align:middle;">⛽ 기름값</span>'
+    let gasTag=(G.mode===3&&G.gasFee===i)
+      ?'<span style="font-size:11px;background:var(--blue-bg);color:var(--blue-txt);border-radius:99px;padding:1px 7px;margin-left:5px;vertical-align:middle;">⛽기름값</span>'
       :'';
     h+='<div class="rrow">'
       +'<div><div style="font-size:15px;font-weight:600;">'+G.nm[i]+gasTag+'</div>'
@@ -637,19 +620,21 @@ function renderResult(){
     +'<div class="msub">게임비 부담액</div></div>').join('');
 
   let ch='';
+  // 1단계
   ch+='<div class="cstep"><div class="cstep-title">1단계 · 홀 기본금액 합산</div>';
   if(G.mode===3) ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">1등 0원 / 2등 '+G.u.toLocaleString()+'원 / 3등 '+(G.u*2).toLocaleString()+'원 (동순위 적용)</div>';
   for(let i=0;i<G.mode;i++) ch+='<div class="crow"><span>'+G.nm[i]+'</span><span>'+raw[i].toLocaleString()+'원</span></div>';
   ch+='</div>';
 
+  // 2단계
   ch+='<div class="cstep"><div class="cstep-title">2단계 · 성적 보너스/패널티</div>';
   for(let i=0;i<G.mode;i++){
     let parts=[],bc=0,ec=0,tc=0;
     for(let j=0;j<G.h;j++){
       let v=G.sc[j][i];
-      if(v===-1)bc++;
-      else if(v!==null&&v<=-2)ec++;
-      else if(v!==null&&v>=3)tc++;
+      if(v===-1) bc++;
+      else if(v!==null&&v<=-2) ec++;
+      else if(v!==null&&v>=3) tc++;
     }
     if(bc>0) parts.push('버디 '+bc+'개 −'+(bc*G.u).toLocaleString()+'원');
     if(ec>0) parts.push('이글+ '+ec+'개 −'+(ec*G.u*2).toLocaleString()+'원');
@@ -660,59 +645,57 @@ function renderResult(){
   for(let i=0;i<G.mode;i++) ch+='<div class="crow tot"><span>'+G.nm[i]+' 소계</span><span>'+x1[i].toLocaleString()+'원</span></div>';
   ch+='</div>';
 
+  // 3단계
   ch+='<div class="cstep"><div class="cstep-title">3단계 · 전체 게임비 비율 배분 (천원 단위 반올림)</div>';
   ch+='<div class="crow"><span>목표 총액</span><span>'+(G.gf*G.mode).toLocaleString()+'원 (인당 '+G.gf.toLocaleString()+'원×'+G.mode+')</span></div>';
-  if(note==='normal') ch+='<div class="crow"><span>배율 k</span><span>'+k.toFixed(2)+'배</span></div>';
-  if(note==='partial') ch+='<div class="crow" style="color:#A32D2D;"><span>일부 0 이하 → 양수 비율로 배분</span><span></span></div>';
+  if(note==='normal'&&k) ch+='<div class="crow"><span>배율 k</span><span>'+k.toFixed(2)+'배</span></div>';
+  if(note==='partial') ch+='<div class="crow" style="color:#A32D2D;"><span>일부 0 이하 → 양수 비율 배분</span><span></span></div>';
   if(note==='even') ch+='<div class="crow"><span>전원 0 이하 → 균등 배분</span><span></span></div>';
-  // x2 before adjustments (기름값/상한 전)
-  let baseX2=x2.map((v,i)=>v-gasAdj[i]-capAdj[i]);
+  let baseX2=x2.map((v,i)=>v-gasAdj[i]-capAdj[i]-roundAdj[i]);
   for(let i=0;i<G.mode;i++) ch+='<div class="crow tot"><span>'+G.nm[i]+' 배분액</span><span>'+baseX2[i].toLocaleString()+'원</span></div>';
   ch+='</div>';
 
-  // 4단계: 기름값 보상 (3인만)
-  if(G.mode===3){
-    if(gasIdx>=0){
-      ch+='<div class="cstep"><div class="cstep-title">4단계 · 기름값 보상</div>';
-      ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">'+G.nm[gasIdx]+' 선택됨 → −2,000원 / 나머지 각 +1,000원</div>';
-      for(let i=0;i<3;i++){
-        let a=gasAdj[i];
-        ch+='<div class="crow"><span>'+G.nm[i]+'</span><span style="color:'+(a<0?'#27500A':a>0?'#A32D2D':'#888')+'">'+(a>=0?'+':'')+a.toLocaleString()+'원</span></div>';
-      }
-      ch+='</div>';
+  let step=4;
+  // 4단계: 기름값
+  if(G.mode===3&&gasIdx>=0){
+    ch+='<div class="cstep"><div class="cstep-title">'+step+'단계 · 기름값 보상</div>';
+    ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">'+G.nm[gasIdx]+' 선택 → −2,000원 / 나머지 각 +1,000원</div>';
+    for(let i=0;i<3;i++){
+      let a=gasAdj[i];
+      ch+='<div class="crow"><span>'+G.nm[i]+'</span><span style="color:'+(a<0?'#27500A':a>0?'#A32D2D':'#888')+'">'+(a>0?'+':'')+a.toLocaleString()+'원</span></div>';
     }
-    // 5단계: 상한 적용
-    let hasCap=capAdj.some(v=>v!==0);
-    if(hasCap){
-      let overIdx=capAdj.findIndex(v=>v<0)||(capAdj.findIndex((_,i)=>baseX2[i]+gasAdj[i]>30000));
-      ch+='<div class="cstep"><div class="cstep-title">'+(gasIdx>=0?'5':'4')+'단계 · 30,000원 상한 적용</div>';
-      ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">30,000원 초과분을 나머지 2명 중 타수 높은 순으로 부과</div>';
-      for(let i=0;i<3;i++){
-        let a=capAdj[i];
-        if(a===0) continue;
-        ch+='<div class="crow"><span>'+G.nm[i]+'</span><span style="color:'+(a<0?'#27500A':'#A32D2D')+'">'+(a>=0?'+':'')+a.toLocaleString()+'원</span></div>';
-      }
-      ch+='</div>';
-    }
+    ch+='</div>';
+    step++;
   }
 
-    // 반올림 보정 단계
-    let hasRound=roundAdj&&roundAdj.some(v=>v!==0);
-    if(hasRound){
-      let stepNum=gasIdx>=0&&capAdj.some(v=>v!==0)?6:gasIdx>=0||capAdj.some(v=>v!==0)?5:4;
-      let tot3=G.gf*3;
-      let prevSum=x2.map((v,i)=>v-roundAdj[i]).reduce((a,b)=>a+b,0);
-      let diff=prevSum-tot3;
-      ch+='<div class="cstep"><div class="cstep-title">'+stepNum+'단계 · 합계 보정</div>';
-      if(diff>0) ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">합계 '+prevSum.toLocaleString()+'원 → 목표보다 '+diff.toLocaleString()+'원 초과 · 1등 차감</div>';
-      else ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">합계 '+prevSum.toLocaleString()+'원 → 목표보다 '+Math.abs(diff).toLocaleString()+'원 부족 · 꼴등 추가</div>';
-      for(let i=0;i<3;i++){
-        if(roundAdj[i]===0) continue;
-        ch+='<div class="crow"><span>'+G.nm[i]+'</span><span style="color:'+(roundAdj[i]<0?'#27500A':'#A32D2D')+'">'+(roundAdj[i]>0?'+':'')+roundAdj[i].toLocaleString()+'원</span></div>';
-      }
-      ch+='</div>';
+  // 상한 단계
+  if(G.mode===3&&capAdj.some(v=>v!==0)){
+    ch+='<div class="cstep"><div class="cstep-title">'+step+'단계 · 30,000원 상한 적용</div>';
+    ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">초과분을 나머지 2명 중 타수 높은 순으로 부과</div>';
+    for(let i=0;i<3;i++){
+      let a=capAdj[i];
+      if(a===0) continue;
+      ch+='<div class="crow"><span>'+G.nm[i]+'</span><span style="color:'+(a<0?'#27500A':'#A32D2D')+'">'+(a>0?'+':'')+a.toLocaleString()+'원</span></div>';
     }
+    ch+='</div>';
+    step++;
   }
+
+  // 반올림 보정 단계
+  if(G.mode===3&&roundAdj.some(v=>v!==0)){
+    let prevSum=x2.map((v,i)=>v-roundAdj[i]).reduce((a,b)=>a+b,0);
+    let diff=prevSum-(G.gf*3);
+    ch+='<div class="cstep"><div class="cstep-title">'+step+'단계 · 합계 보정</div>';
+    if(diff>0) ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">합계 '+prevSum.toLocaleString()+'원 → '+diff.toLocaleString()+'원 초과 · 1등 차감</div>';
+    else ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">합계 '+prevSum.toLocaleString()+'원 → '+Math.abs(diff).toLocaleString()+'원 부족 · 꼴등 추가</div>';
+    for(let i=0;i<3;i++){
+      let a=roundAdj[i];
+      if(a===0) continue;
+      ch+='<div class="crow"><span>'+G.nm[i]+'</span><span style="color:'+(a<0?'#27500A':'#A32D2D')+'">'+(a>0?'+':'')+a.toLocaleString()+'원</span></div>';
+    }
+    ch+='</div>';
+  }
+
   // 최종
   ch+='<div class="cstep" style="background:var(--bg);border-radius:var(--radius-sm);padding:10px 12px;margin-top:4px;">';
   for(let i=0;i<G.mode;i++) ch+='<div class="crow tot"><span>'+G.nm[i]+' 최종</span><span style="color:#A32D2D;">−'+x2[i].toLocaleString()+'원</span></div>';
@@ -755,15 +738,15 @@ function loadState(){
     let saved=JSON.parse(raw);
     if(!saved||!saved.G) return false;
     G=saved.G;
-    setMode(G.mode);
     if(G.gasFee===undefined) G.gasFee=-1;
-    updateGasUI();
+    setMode(G.mode);
     document.getElementById('p1name').value=G.nm[0];
     document.getElementById('p2name').value=G.nm[1];
     document.getElementById('p3name').value=G.nm[2]||'이태석';
     document.getElementById('gf').value=G.gf;
     document.getElementById('hd').textContent=G.h+'홀';
     document.getElementById('ud').textContent=G.u.toLocaleString()+'원';
+    updateGasUI();
     updI();
     if(saved.page==='pg-score'){
       document.getElementById('topbar-sub').textContent=G.nm.slice(0,G.mode).join(' · ');
@@ -777,6 +760,7 @@ function loadState(){
 }
 function clearState(){try{localStorage.removeItem('golf_state');}catch(e){}}
 
+/* ── 앱 시작 ── */
 if(!loadState()){initSc();updI();}
 </script>
 </body>
