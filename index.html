@@ -26,36 +26,36 @@ body{overflow-x:hidden;}
 .topbar{background:var(--blue);color:#fff;padding:14px 16px 12px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10;}
 .topbar-title{font-size:17px;font-weight:600;}
 .topbar-sub{font-size:13px;opacity:.8;margin-left:auto;}
-.page{display:none;padding:12px 14px;}.page.active{display:block;}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;}
-.sec{font-size:11px;color:var(--txt2);font-weight:600;margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase;}
-.frow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.page{display:none;padding:8px 12px;}.page.active{display:block;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;}
+.sec{font-size:11px;color:var(--txt2);font-weight:600;margin-bottom:6px;letter-spacing:.06em;text-transform:uppercase;}
+.frow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);}
 .frow:last-child{border-bottom:none;}
 .flabel{font-size:15px;color:var(--txt);}
 .fsub{font-size:12px;color:var(--txt3);margin-top:2px;}
-.finput{font-size:15px;text-align:right;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--txt);}
+.finput{font-size:14px;text-align:right;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 8px;color:var(--txt);}
 .finput:focus{outline:none;border-color:var(--blue);}
 .nrow{display:flex;align-items:center;gap:10px;}
-.nbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border2);background:var(--card);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt);line-height:1;}
+.nbtn{width:30px;height:30px;border-radius:50%;border:1px solid var(--border2);background:var(--card);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt);line-height:1;}
 .nbtn:active{background:var(--bg);}
-.nval{font-size:15px;font-weight:600;min-width:58px;text-align:center;color:var(--txt);}
-.ibox{background:var(--blue-bg);border-radius:var(--radius-sm);padding:10px 13px;font-size:13px;color:var(--blue-txt);margin-bottom:14px;line-height:1.6;}
-.btn-full{width:100%;padding:15px;font-size:16px;font-weight:700;border-radius:var(--radius);border:none;cursor:pointer;background:var(--blue);color:#fff;letter-spacing:.02em;font-family:inherit;}
+.nval{font-size:14px;font-weight:600;min-width:52px;text-align:center;color:var(--txt);}
+.ibox{background:var(--blue-bg);border-radius:var(--radius-sm);padding:7px 12px;font-size:12px;color:var(--blue-txt);margin-bottom:8px;line-height:1.5;}
+.btn-full{width:100%;padding:12px;font-size:15px;font-weight:700;border-radius:var(--radius);border:none;cursor:pointer;background:var(--blue);color:#fff;letter-spacing:.02em;font-family:inherit;}
 .btn-full:active{background:var(--blue-txt);}
 .btnsm{font-size:13px;padding:8px 14px;border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border2);background:var(--card);color:var(--txt);font-weight:500;font-family:inherit;}
 .btnsm:active{background:var(--bg);}
 .btnsmp{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:600;}
 .btnsmp:active{background:var(--blue-txt);}
 .brow{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px;}
-.pmode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
-.pmode-btn{padding:18px 10px;border-radius:var(--radius);border:2px solid var(--border);background:var(--card);cursor:pointer;text-align:center;width:100%;font-family:inherit;}
+.pmode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0;}
+.pmode-btn{padding:10px 10px;border-radius:var(--radius);border:2px solid var(--border);background:var(--card);cursor:pointer;text-align:center;width:100%;font-family:inherit;}
 .pmode-btn.active{border-color:var(--blue);background:var(--blue-bg);}
 .pmode-btn:active{transform:scale(.97);}
-.pmode-num{font-size:28px;font-weight:700;color:var(--txt2);}
+.pmode-num{font-size:22px;font-weight:700;color:var(--txt2);}
 .pmode-btn.active .pmode-num{color:var(--blue-txt);}
-.pmode-label{font-size:13px;color:var(--txt2);margin-top:3px;}
+.pmode-label{font-size:12px;color:var(--txt2);margin-top:1px;}
 .pmode-btn.active .pmode-label{color:var(--blue-txt);}
-.prow{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);}
+.prow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);}
 .prow:last-child{border-bottom:none;}
 .pavt{display:inline-flex;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:700;align-items:center;justify-content:center;flex-shrink:0;}
 .gas-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;}
@@ -134,9 +134,8 @@ body{overflow-x:hidden;}
 
   <!-- PAGE 1: 설정 -->
   <div id="pg-setup" class="page active">
-    <div style="height:12px;"></div>
-    <div class="card">
-      <div class="sec">인원 선택</div>
+    <div class="card" style="margin-top:8px;">
+      <div class="sec" style="margin-bottom:6px;">인원 선택</div>
       <div class="pmode-grid">
         <button class="pmode-btn active" id="mode2btn" onclick="setMode(2)" type="button">
           <div class="pmode-num">2인</div>
@@ -150,7 +149,7 @@ body{overflow-x:hidden;}
     </div>
     <div class="card">
       <div class="sec">플레이어</div>
-      <div id="gasfee-hint" style="display:none;font-size:12px;padding:8px 10px;background:var(--blue-bg);border-radius:var(--radius-sm);color:var(--blue-txt);margin-bottom:10px;">⛽ 멀리서 오는 플레이어 이름 옆 버튼을 눌러 기름값 체크</div>
+      <div id="gasfee-hint" style="display:none;font-size:12px;padding:6px 10px;background:var(--blue-bg);border-radius:var(--radius-sm);color:var(--blue-txt);margin-bottom:6px;">⛽ 멀리서 오는 플레이어 이름 옆 버튼을 눌러 기름값 체크</div>
       <div class="prow">
         <span class="pavt" style="background:var(--blue-bg);color:var(--blue-txt);">P1</span>
         <input class="finput" id="p1name" type="text" value="공창섭" maxlength="8" style="flex:1;width:auto;"/>
@@ -169,22 +168,8 @@ body{overflow-x:hidden;}
     </div>
     <div class="card">
       <div class="sec">게임 설정</div>
-      <div class="frow">
-        <div class="flabel">홀 수</div>
-        <div class="nrow">
-          <button class="nbtn" onclick="chH(-9)" type="button">−</button>
-          <span class="nval" id="hd">18홀</span>
-          <button class="nbtn" onclick="chH(9)" type="button">+</button>
-        </div>
-      </div>
-      <div class="frow">
-        <div><div class="flabel">홀당 기준금액</div><div class="fsub" id="unit-sub">패자 부담 / 비길 때 각자</div></div>
-        <div class="nrow">
-          <button class="nbtn" onclick="chU(-500)" type="button">−</button>
-          <span class="nval" id="ud">1,000원</span>
-          <button class="nbtn" onclick="chU(500)" type="button">+</button>
-        </div>
-      </div>
+
+
       <div class="frow">
         <div><div class="flabel">인당 게임비</div><div class="fsub">게임장 이용 비용</div></div>
         <input class="finput" id="gf" type="number" value="15000" min="0" step="1000" style="width:130px;"/>
@@ -278,9 +263,7 @@ function setMode(m){
   let p2=document.getElementById('p2name');
   if(m===2&&p2.value==='') p2.value='이태석';
   if(m===3&&p2.value==='이태석') p2.value='';
-  document.getElementById('unit-sub').textContent=m===2
-    ?'패자 부담 / 비길 때 각자'
-    :'1등 0원 / 2등 기준금액 / 3등 2배';
+
   for(let p=0;p<3;p++){
     let el=document.getElementById('gascheck'+p);
     if(el) el.style.display=m===3?'flex':'none';
@@ -308,12 +291,10 @@ function updateGasUI(){
   }
 }
 
-function chH(d){let v=G.h+d;if(v<9)v=9;if(v>18)v=18;G.h=v;document.getElementById('hd').textContent=v+'홀';updI();}
-function chU(d){let v=G.u+d;if(v<500)v=500;if(v>10000)v=10000;G.u=v;document.getElementById('ud').textContent=v.toLocaleString()+'원';updI();}
 function updI(){
   document.getElementById('ibox').textContent=G.mode===2
-    ?'홀당 '+G.u.toLocaleString()+'원 · '+G.h+'홀 · 성적 보너스 반영 후 게임비 비율 배분'
-    :'1등 0원 / 2등 '+G.u.toLocaleString()+'원 / 3등 '+(G.u*2).toLocaleString()+'원 · '+G.h+'홀 · 성적 보너스 반영 후 게임비 비율 배분';
+    ?'홀당 1,000원 · 18홀 · 성적 보너스 반영 후 게임비 비율 배분'
+    :'1등 0원 / 2등 1,000원 / 3등 2,000원 · 18홀 · 성적 보너스 반영 후 게임비 비율 배분';
 }
 
 function showP(id){
