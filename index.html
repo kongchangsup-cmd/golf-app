@@ -319,8 +319,8 @@ function holeAmounts(row){
   if(row.some(v=>v===null)) return null;
   if(G.mode===2){
     let [a,b]=row;
-    if(a===b) return [G.u,G.u];
-    return a<b?[0,G.u]:[G.u,0];
+    if(a===b) return [G.u,G.u];       // 비김: 각 1,000원
+    return a<b?[0,G.u*2]:[G.u*2,0];  // 이김: 0원, 짐: 2,000원
   }
   // 3인: 전원동타=각u, 공동1등2명=0/0/2u, 1등1명공동2등=0/u/u, 1/2/3등=0/u/2u
   let [a,b,c]=row;
