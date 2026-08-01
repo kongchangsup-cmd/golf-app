@@ -200,7 +200,6 @@ body{overflow-x:hidden;}
       <div class="sec">성적 기록</div>
       <div style="overflow-x:auto;" id="scoretable"></div>
     </div>
-    <div id="mg-debug" style="font-size:11px;color:#A32D2D;padding:4px 8px;background:#FCEBEB;border-radius:6px;margin-bottom:6px;display:block;"></div>
     <div class="card">
       <div class="sec">누적 현황</div>
       <div id="rtotal"></div>
@@ -501,12 +500,20 @@ function renderInputs(){
   let h='';
   for(let p=0;p<G.mode;p++){
     let sel=G.sc[G.cur][p];
-    let mgCnt=G.mg&&G.mg[G.cur]?G.mg[G.cur][p]:0;
-    let mgLabel=mgCnt===0?'🔄':'🔄×'+mgCnt;
-    let mgColor=mgCnt===0?'var(--border2)':mgCnt===1?'var(--amber-txt)':'var(--red)';
-    let mgBg=mgCnt===0?'var(--bg)':mgCnt===1?'var(--amber-bg)':'#FCEBEB';
+    // 이 홀 사용 여부
+    let mgCnt=Number((G.mg&&Array.isArray(G.mg[G.cur])&&G.mg[G.cur][p]!==undefined)?G.mg[G.cur][p]:0)||0;
+    // 전체 사용 횟수
+    let mgTotal=0;
+    if(G.mg) for(let j=0;j<G.h;j++) mgTotal+=Number((Array.isArray(G.mg[j])&&G.mg[j][p]!==undefined)?G.mg[j][p]:0)||0;
+    let mgUsed=mgCnt>=1; // 이 홀 이미 사용
+    let mgMax=mgTotal>=3; // 전체 3회 초과
+    let mgDisabled=mgUsed||mgMax;
+    let mgLabel=mgCnt===0?'🔄':'✅멀리건';
+    let mgColor=mgDisabled?'#c0c7d0':mgCnt===1?'var(--amber-txt)':'var(--border2)';
+    let mgBg=mgDisabled?(mgCnt===1?'var(--amber-bg)':'var(--bg)'):'var(--bg)';
+    let mgOpacity=mgDisabled&&!mgUsed?'opacity:.4;':'';
     let mgBtn=G.useMulligan
-      ?'<button onclick="addMulligan('+p+')" type="button" style="margin-left:auto;padding:3px 10px;border-radius:99px;border:1.5px solid '+mgColor+';background:'+mgBg+';color:'+mgColor+';font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">'+mgLabel+'</button>'
+      ?'<button onclick="'+(mgDisabled?'':'addMulligan('+p+')')+'" type="button" style="margin-left:auto;padding:3px 10px;border-radius:99px;border:1.5px solid '+mgColor+';background:'+mgBg+';color:'+mgColor+';font-size:12px;font-weight:600;cursor:'+(mgDisabled?'default':'pointer')+';font-family:inherit;'+mgOpacity+'">'+mgLabel+'</button>'
       :'';
     h+='<div class="player-section">'
       +'<div class="player-header">'
@@ -625,22 +632,19 @@ function renderST(){
 }
 
 function addMulligan(p){
-  // G.mg 완전 초기화 보장
   if(!G.mg||!Array.isArray(G.mg)||G.mg.length!==G.h){
     G.mg=Array.from({length:G.h},()=>Array(G.mode).fill(0));
   }
   if(!Array.isArray(G.mg[G.cur])||G.mg[G.cur].length!==G.mode){
     G.mg[G.cur]=Array(G.mode).fill(0);
   }
-  let cur=Number(G.mg[G.cur][p])||0;
-  if(cur>=3) return;
-  G.mg[G.cur][p]=cur+1;
-  // 디버그: mg 상태 확인
-  let dbEl=document.getElementById('mg-debug');
-  if(dbEl){
-    let info=G.mg.slice(0,3).map((r,i)=>'홀'+(i+1)+':'+JSON.stringify(r)).join(' | ');
-    dbEl.textContent='mg상태: '+info+' | useMg:'+G.useMulligan;
-  }
+  // 이미 이 홀에서 사용했으면 불가
+  if(G.mg[G.cur][p]>=1) return;
+  // 전체 라운드 3회 초과 불가
+  let totalUsed=0;
+  for(let i=0;i<G.h;i++) totalUsed+=Number((Array.isArray(G.mg[i])&&G.mg[i][p]!==undefined)?G.mg[i][p]:0)||0;
+  if(totalUsed>=3) return;
+  G.mg[G.cur][p]=1;
   renderHole();saveState();
 }
 
