@@ -257,7 +257,7 @@ let G={mode:2,h:18,u:1000,gf:15000,cur:0,sc:[],nm:['공창섭','이태석','이�
 
 function initSc(){
   G.sc=Array.from({length:G.h},()=>Array(G.mode).fill(null));
-  G.mg=Array.from({length:G.h},()=>Array(G.mode).fill(0));
+  G.mg=Array(G.mode).fill(0);
 }
 
 function toggleMulligan(){
@@ -325,7 +325,7 @@ function startGame(){
   if(G.mode===3) G.nm[2]=document.getElementById('p3name').value||'이태석';
   G.gf=parseInt(document.getElementById('gf').value)||0;
   document.getElementById('topbar-sub').textContent=G.nm.slice(0,G.mode).join(' · ');
-  G.mg=Array.from({length:G.h},()=>Array(G.mode).fill(0)); // 멀리건 초기화
+  G.mg=Array(G.mode).fill(0); // 멀리건 초기화
   initSc();G.cur=0;showP('pg-score');renderHole();saveState('pg-score');
 }
 function goResult(){renderResult();showP('pg-result');saveState('pg-result');}
@@ -365,19 +365,16 @@ function calcScoreBonus(){
   return bn;
 }
 function calcMgBonus(){
-  // 전체 라운드 멀리건 합산 기준 (총 2회부터 비용)
+  // 플레이어별 누적 멀리건: 0~1회 무료, 2회 +1,000원, 3회 +2,000원
   let mg=Array(G.mode).fill(0);
-  if(!G.useMulligan||!G.mg) return mg;
+  if(!G.useMulligan) return mg;
   for(let p=0;p<G.mode;p++){
-    let total=0;
-    for(let i=0;i<G.h;i++){
-      total+=Number((Array.isArray(G.mg[i])&&G.mg[i][p]!==undefined)?G.mg[i][p]:0)||0;
-    }
-    // 1회: 0원, 2회: +1000, 3회: +2000
+    let total=Number(G.mg?.[p])||0;
     if(total>=2) mg[p]=(total-1)*G.u;
   }
   return mg;
 }
+
 function calcBonus(){
   // 성적+멀리건 합산
   let sb=calcScoreBonus(), mb=calcMgBonus();
@@ -498,27 +495,20 @@ function calcEst(){
 /* ── 렌더링 ── */
 function renderInputs(){
   let h='';
+  const scores=totalScores();
+  const est=calcEst();
   for(let p=0;p<G.mode;p++){
     let sel=G.sc[G.cur][p];
-    // 이 홀 사용 여부
-    let mgCnt=Number((G.mg&&Array.isArray(G.mg[G.cur])&&G.mg[G.cur][p]!==undefined)?G.mg[G.cur][p]:0)||0;
-    // 전체 사용 횟수
-    let mgTotal=0;
-    if(G.mg) for(let j=0;j<G.h;j++) mgTotal+=Number((Array.isArray(G.mg[j])&&G.mg[j][p]!==undefined)?G.mg[j][p]:0)||0;
-    let mgUsed=mgCnt>=1; // 이 홀 이미 사용
-    let mgMax=mgTotal>=3; // 전체 3회 초과
-    let mgDisabled=mgUsed||mgMax;
-    let mgLabel=mgCnt===0?'🔄':'✅멀리건';
-    let mgColor=mgDisabled?'#c0c7d0':mgCnt===1?'var(--amber-txt)':'var(--border2)';
-    let mgBg=mgDisabled?(mgCnt===1?'var(--amber-bg)':'var(--bg)'):'var(--bg)';
-    let mgOpacity=mgDisabled&&!mgUsed?'opacity:.4;':'';
+    let mgTotal=Number(G.mg?.[p])||0;
     let mgBtn=G.useMulligan
-      ?'<button onclick="'+(mgDisabled?'':'addMulligan('+p+')')+'" type="button" style="margin-left:auto;padding:3px 10px;border-radius:99px;border:1.5px solid '+mgColor+';background:'+mgBg+';color:'+mgColor+';font-size:12px;font-weight:600;cursor:'+(mgDisabled?'default':'pointer')+';font-family:inherit;'+mgOpacity+'">'+mgLabel+'</button>'
+      ?'<button onclick="cycleMulligan('+p+')" type="button" style="margin-left:auto;flex-shrink:0;padding:5px 8px;border-radius:8px;border:1.5px solid var(--blue);background:var(--blue-bg);color:var(--blue-txt);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">멀리건'+mgTotal+'</button>'
       :'';
+    let scoreText=G.sc.some(row=>row[p]!==null)?dv(scores[p]):'—';
+    let costText=est?est[p].toLocaleString('ko-KR').replace(/,/g,'')+'원':'—';
     h+='<div class="player-section">'
-      +'<div class="player-header">'
-      +'<div class="av" style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;'+AV_STYLE[p]+'">P'+(p+1)+'</div>'
-      +'<span class="pname">'+G.nm[p]+'</span>'
+      +'<div class="player-header" style="gap:5px;">'
+      +'<div class="av" style="width:24px;height:24px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;'+AV_STYLE[p]+'">P'+(p+1)+'</div>'
+      +'<span class="pname" style="font-size:clamp(11px,3.3vw,15px);white-space:nowrap;letter-spacing:-.4px;">'+G.nm[p]+' ('+scoreText+' / '+costText+')</span>'
       +mgBtn
       +'</div><div class="score-btn-grid">';
     LV.forEach(lv=>{
@@ -631,21 +621,11 @@ function renderST(){
   document.getElementById('scoretable').innerHTML=h;
 }
 
-function addMulligan(p){
-  if(!G.mg||!Array.isArray(G.mg)||G.mg.length!==G.h){
-    G.mg=Array.from({length:G.h},()=>Array(G.mode).fill(0));
-  }
-  if(!Array.isArray(G.mg[G.cur])||G.mg[G.cur].length!==G.mode){
-    G.mg[G.cur]=Array(G.mode).fill(0);
-  }
-  // 이미 이 홀에서 사용했으면 불가
-  if(G.mg[G.cur][p]>=1) return;
-  // 전체 라운드 3회 초과 불가
-  let totalUsed=0;
-  for(let i=0;i<G.h;i++) totalUsed+=Number((Array.isArray(G.mg[i])&&G.mg[i][p]!==undefined)?G.mg[i][p]:0)||0;
-  if(totalUsed>=3) return;
-  G.mg[G.cur][p]=1;
-  renderHole();saveState();
+function cycleMulligan(p){
+  if(!Array.isArray(G.mg)||G.mg.length!==G.mode) G.mg=Array(G.mode).fill(0);
+  G.mg[p]=((Number(G.mg[p])||0)+1)%4;
+  renderHole();
+  saveState();
 }
 
 function setSc(p,v){G.sc[G.cur][p]=v;renderHole();saveState();}
@@ -669,14 +649,11 @@ function renderRun(){
       :'';
     // 멀리건 누적 태그 (이름 옆)
     let mgTag='';
-    let totalMg=0;
-    if(G.useMulligan&&G.mg){
-      for(let j=0;j<G.h;j++) totalMg+=Number((Array.isArray(G.mg[j])&&G.mg[j][i]!==undefined)?G.mg[j][i]:0)||0;
-      if(totalMg>0){
-        let mgCol=mb[i]>0?'#A32D2D':'#854F0B';
-        let mgBg=mb[i]>0?'#FCEBEB':'var(--amber-bg)';
-        mgTag='<span style="font-size:11px;background:'+mgBg+';color:'+mgCol+';border-radius:99px;padding:1px 7px;margin-left:5px;vertical-align:middle;">🔄'+totalMg+'회'+(mb[i]>0?' +'+mb[i].toLocaleString()+'원':'')+'</span>';
-      }
+    let totalMg=Number(G.mg?.[i])||0;
+    if(G.useMulligan&&totalMg>0){
+      let mgCol=mb[i]>0?'#A32D2D':'#854F0B';
+      let mgBg=mb[i]>0?'#FCEBEB':'var(--amber-bg)';
+      mgTag='<span style="font-size:11px;background:'+mgBg+';color:'+mgCol+';border-radius:99px;padding:1px 7px;margin-left:5px;vertical-align:middle;">🔄'+totalMg+'회'+(mb[i]>0?' +'+mb[i].toLocaleString()+'원':'')+'</span>';
     }
     // 기본/성적/멀리건 분리 표시
     let subParts='기본 '+raw[i].toLocaleString();
@@ -730,10 +707,10 @@ function renderResult(){
     if(bc>0) parts.push('버디 '+bc+'개 −'+(bc*G.u).toLocaleString()+'원');
     if(ec>0) parts.push('이글+ '+ec+'개 −'+(ec*G.u*2).toLocaleString()+'원');
     if(tc>0) parts.push('트리플+ '+tc+'개 +'+(tc*G.u).toLocaleString()+'원');
-    if(G.useMulligan&&G.mg){
-      let mgCost=0;
-      for(let j=0;j<G.h;j++){let mc=(G.mg[j]&&G.mg[j][i])||0;if(mc>=2) mgCost+=(mc-1)*G.u;}
-      if(mgCost>0) parts.push('멀리건 비용 +'+mgCost.toLocaleString()+'원');
+    if(G.useMulligan){
+      let count=Number(G.mg?.[i])||0;
+      let mgCost=count>=2?(count-1)*G.u:0;
+      if(count>0) parts.push('멀리건 '+count+'회'+(mgCost?' +'+mgCost.toLocaleString()+'원':' (무료)'));
     }
     ch+='<div class="crow"><span>'+G.nm[i]+'</span><span>'+(bn[i]>=0?'+':'')+bn[i].toLocaleString()+'원</span></div>';
     ch+='<div style="font-size:11px;color:#94a3b8;padding:0 0 3px;">'+(parts.length?parts.join(' / '):'없음')+'</div>';
@@ -822,9 +799,7 @@ function renderResult(){
 /* ── localStorage ── */
 function saveState(page){
   try{
-    // G.mg를 flat 배열로 저장 (JSON 복원 시 구조 보장)
-    let mgFlat=G.mg?G.mg.map(row=>Array.isArray(row)?[...row]:Array(G.mode).fill(0)):null;
-    localStorage.setItem('golf_state',JSON.stringify({G:{...G,mg:mgFlat},page:page||currentPage()}));
+    localStorage.setItem('golf_state',JSON.stringify({G,page:page||currentPage()}));
   }catch(e){}
 }
 function currentPage(){
@@ -842,20 +817,20 @@ function loadState(){
     G=saved.G;
     if(G.gasFee===undefined) G.gasFee=-1;
     if(G.useMulligan===undefined) G.useMulligan=false;
-    // G.mg 복원: 반드시 2차원 배열로 재구성
-    G.mg=Array.from({length:G.h},(_,i)=>{
-      let row=G.mg&&G.mg[i];
-      return Array.from({length:G.mode},(_,p)=>
-        (row&&row[p]!==undefined&&row[p]!==null)?Number(row[p])||0:0
-      );
-    });
+    // 기존 홀별 저장 데이터를 플레이어별 누적 횟수로 이전
+    if(Array.isArray(G.mg)&&Array.isArray(G.mg[0])){
+      let old=G.mg;
+      G.mg=Array.from({length:G.mode},(_,p)=>Math.min(3,old.reduce((sum,row)=>sum+(Number(row?.[p])||0),0)));
+    } else {
+      G.mg=Array.from({length:G.mode},(_,p)=>Math.max(0,Math.min(3,Number(G.mg?.[p])||0)));
+    }
+    let restoredGas=G.gasFee;
     setMode(G.mode);
+    G.gasFee=restoredGas;
     document.getElementById('p1name').value=G.nm[0];
     document.getElementById('p2name').value=G.nm[1];
     document.getElementById('p3name').value=G.nm[2]||'이태석';
     document.getElementById('gf').value=G.gf;
-    document.getElementById('hd').textContent=G.h+'홀';
-    document.getElementById('ud').textContent=G.u.toLocaleString()+'원';
     updateGasUI();
     updI();
     let mb=document.getElementById('mulligan-toggle');
