@@ -321,7 +321,7 @@ function updateGasUI(){
 }
 
 function updI(){
-  document.getElementById('ibox').textContent=G.mode===4?'4인 랜덤 2:2 팀전 · 점수 입력 후 팀 뽑기 · 동점 배율 이월 · 버디 -1,000원 / 이글 -3,000원 · 1인 최대 30,000원':G.mode===2
+  document.getElementById('ibox').textContent=G.mode===4?'4인 랜덤 2:2 팀전 · 점수 입력 후 팀 뽑기 · 동점 배율 이월 · 버디 -1,000원 / 이글 -3,000원 · 1인 최대 게임비 2배':G.mode===2
     ?'홀당 1,000원 · 18홀 · 성적 보너스 반영 후 게임비 비율 배분'
     :'1등 0원 / 2등 1,000원 / 3등 2,000원 · 18홀 · 성적 보너스 반영 후 게임비 비율 배분';
 }
@@ -340,7 +340,7 @@ function startGame(){
   G.teamFee=Number(document.getElementById('teamfee').value)||0;
   if(G.mode===4 && (G.teamFee<0||G.teamFee%1000!==0)){alert('홀별 비용은 1,000원 단위로 입력하세요.');return;}
   G.gf=parseInt(document.getElementById('gf').value)||0;
-  if(G.mode===4&&(G.gf<0||G.gf%1000!==0||G.gf>30000)){alert('4인 팀전의 인당 게임비는 0~30,000원, 1,000원 단위로 입력하세요.');return;}
+  if(G.mode===4&&(G.gf<0||G.gf%1000!==0)){alert('4인 팀전의 인당 게임비는 0원 이상, 1,000원 단위로 입력하세요.');return;}
   document.getElementById('topbar-sub').textContent=G.nm.slice(0,G.mode).join(' · ');
   G.mg=Array(G.mode).fill(0); // 멀리건 초기화
   initSc();G.cur=0;showP('pg-score');renderHole();saveState('pg-score');
@@ -413,8 +413,8 @@ function renderTeamDraw(){
   el.innerHTML=h;
 }
 function distribute4(weights,total){
-  let units=total/1000,cap=30;
-  if(!Number.isInteger(units)||units>120)return null;
+  let units=total/1000,cap=(G.gf*2)/1000;
+  if(!Number.isInteger(units)||units>cap*4)return null;
   let w=weights.map(v=>Math.max(0,v));if(w.every(v=>v===0))w=[1,1,1,1];
   let result=[0,0,0,0];
   for(let n=0;n<units;n++){
@@ -523,9 +523,9 @@ function calcFinal(){
       for(let p=0;p<3;p++) if(p!==gasIdx) gasAdj[p]=1000;
     }
 
-    // ② 기름값 반영 후 30,000원 상한 적용
+    // ② 기름값 반영 후 인당 게임비 2배 상한 적용
     let tmp=x2.map((v,i)=>v+gasAdj[i]);
-    let CAP=30000;
+    let CAP=G.gf*2;
     let overIdx=tmp.findIndex(v=>v>CAP);
     if(overIdx>=0){
       let over=tmp[overIdx]-CAP;
@@ -819,7 +819,7 @@ function renderResult(){
   // 3단계
   ch+='<div class="cstep"><div class="cstep-title">3단계 · 전체 게임비 비율 배분 (천원 단위 반올림)</div>';
   ch+='<div class="crow"><span>목표 총액</span><span>'+(G.gf*G.mode).toLocaleString()+'원 (인당 '+G.gf.toLocaleString()+'원×'+G.mode+')</span></div>';
-  if(note==='team4')ch+='<div class="crow"><span>4인 팀전</span><span>천원 단위 · 1인 30,000원 상한</span></div>';
+  if(note==='team4')ch+='<div class="crow"><span>4인 팀전</span><span>천원 단위 · 1인 인당 게임비 2배 상한</span></div>';
   if(note==='normal'&&k) ch+='<div class="crow"><span>배율 k</span><span>'+k.toFixed(2)+'배</span></div>';
   if(note==='partial') ch+='<div class="crow" style="color:#A32D2D;"><span>일부 0 이하 → 양수 비율 배분</span><span></span></div>';
   if(note==='even') ch+='<div class="crow"><span>전원 0 이하 → 균등 배분</span><span></span></div>';
@@ -842,7 +842,7 @@ function renderResult(){
 
   // 상한 단계
   if(G.mode===3&&capAdj.some(v=>v!==0)){
-    ch+='<div class="cstep"><div class="cstep-title">'+step+'단계 · 30,000원 상한 적용</div>';
+    ch+='<div class="cstep"><div class="cstep-title">'+step+'단계 · 인당 게임비 2배 상한 적용</div>';
     ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">초과분을 나머지 2명 중 타수 높은 순으로 부과</div>';
     for(let i=0;i<3;i++){
       let a=capAdj[i];
