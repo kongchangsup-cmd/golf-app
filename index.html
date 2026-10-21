@@ -89,6 +89,9 @@ body{overflow-x:hidden;}
 .hnav{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
 .htitle{font-size:17px;font-weight:700;color:var(--txt);}
 .divider{height:1px;background:var(--border);margin:4px 0 12px;}
+.team-win-score{border:2px solid #d43b3b!important;border-radius:7px;padding:2px 5px!important;}
+.team-lose-score{border:2px solid #2874c7!important;border-radius:7px;padding:2px 5px!important;}
+.team-tie-score{border:2px solid #94a3b8!important;border-radius:7px;padding:2px 5px!important;}
 .score-table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed;}
 .score-table th{font-size:11px;color:var(--txt2);font-weight:600;padding:6px 3px;text-align:center;border-bottom:1px solid var(--border);background:var(--bg);}
 .score-table th:first-child{text-align:left;padding-left:0;width:36px;}
@@ -145,6 +148,8 @@ body{overflow-x:hidden;}
           <div class="pmode-num">3인</div>
           <div class="pmode-label">1 vs 1 vs 1</div>
         </button>
+        <button class="pmode-btn" id="mode4btn" onclick="setMode(4)" type="button"><div class="pmode-num">4인</div><div class="pmode-label">랜덤 2 vs 2</div></button>
+        <button class="pmode-btn" id="mode4singlebtn" onclick="alert('4인 개인전은 추후 개발 예정입니다.')" type="button"><div class="pmode-num">4인 개인전</div><div class="pmode-label">준비 중</div></button>
       </div>
     </div>
     <div class="card">
@@ -165,6 +170,7 @@ body{overflow-x:hidden;}
         <input class="finput" id="p3name" type="text" value="이태석" maxlength="8" style="flex:1;width:auto;"/>
         <button id="gascheck2" class="gas-btn" onclick="toggleGas(2)" type="button" style="display:none;">⛽</button>
       </div>
+      <div class="prow" id="p4row" style="display:none;"><span class="pavt" style="background:#FAEEDA;color:#633806;">P4</span><input class="finput" id="p4name" type="text" value="플레이어4" maxlength="8" style="flex:1;width:auto;"/></div>
     </div>
     <div class="card">
       <div class="sec">게임 설정</div>
@@ -174,6 +180,7 @@ body{overflow-x:hidden;}
         <div><div class="flabel">인당 게임비</div><div class="fsub">게임장 이용 비용</div></div>
         <input class="finput" id="gf" type="number" value="15000" min="0" step="1000" style="width:130px;"/>
       </div>
+      <div class="frow" id="teamfee-row" style="display:none"><div><div class="flabel">4인 팀전 홀별 비용</div><div class="fsub">패배팀 1인당 기본 비용</div></div><input class="finput" id="teamfee" type="number" value="1000" min="0" step="1000" style="width:130px;"/></div>
       <div class="frow">
         <div><div class="flabel">멀리건 비용 적용</div><div class="fsub">2회 +1,000원 / 3회 +2,000원</div></div>
         <button id="mulligan-toggle" onclick="toggleMulligan()" type="button" style="width:52px;height:30px;border-radius:99px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;background:#94a3b8;color:#fff;transition:background .2s;">OFF</button>
@@ -193,6 +200,7 @@ body{overflow-x:hidden;}
         <button class="btnsm" onclick="nextH()" type="button">다음 →</button>
       </div>
       <div id="score-inputs"></div>
+      <div id="team-draw-area" style="display:none;margin:10px 0;"></div>
       <div class="sdisplay" id="sdisplay"></div>
       <div class="verdict-box" id="verd"></div>
     </div>
@@ -244,6 +252,7 @@ const AV_STYLE=[
   'background:var(--blue-bg);color:var(--blue-txt);',
   'background:var(--purple-bg);color:var(--purple-txt);',
   'background:var(--teal-bg);color:var(--teal-txt);',
+  'background:var(--amber-bg);color:var(--amber-txt);',
 ];
 
 function dv(v){return v===0?'E':(v>0?'+'+v:String(v));}
@@ -253,11 +262,12 @@ function vc(v){if(v===null)return '#94a3b8';if(v<=-2)return '#0C447C';if(v===-1)
 function sc(v){return v<0?'#27500A':v===0?'#444441':'#A32D2D';}
 function r1k(v){return Math.round(v/1000)*1000;}
 
-let G={mode:2,h:18,u:1000,gf:15000,cur:0,sc:[],nm:['공창섭','이태석','이태석'],gasFee:-1,useMulligan:false,mg:[]};
+let G={mode:2,h:18,u:1000,gf:15000,cur:0,sc:[],nm:['공창섭','이태석','이태석','플레이어4'],teamFee:1000,draws:[],gasFee:-1,useMulligan:false,mg:[]};
 
 function initSc(){
   G.sc=Array.from({length:G.h},()=>Array(G.mode).fill(null));
   G.mg=Array(G.mode).fill(0);
+  G.draws=Array(G.h).fill(null);
 }
 
 function toggleMulligan(){
@@ -274,7 +284,10 @@ function setMode(m){
   G.gasFee=-1;
   document.getElementById('mode2btn').classList.toggle('active',m===2);
   document.getElementById('mode3btn').classList.toggle('active',m===3);
-  document.getElementById('p3row').style.display=m===3?'flex':'none';
+  document.getElementById('mode4btn').classList.toggle('active',m===4);
+  document.getElementById('p4row').style.display=m===4?'flex':'none';
+  document.getElementById('teamfee-row').style.display=m===4?'flex':'none';
+  document.getElementById('p3row').style.display=m>=3?'flex':'none';
   document.getElementById('gasfee-hint').style.display=m===3?'block':'none';
   let p2=document.getElementById('p2name');
   if(m===2&&p2.value==='') p2.value='이태석';
@@ -308,7 +321,7 @@ function updateGasUI(){
 }
 
 function updI(){
-  document.getElementById('ibox').textContent=G.mode===2
+  document.getElementById('ibox').textContent=G.mode===4?'4인 랜덤 2:2 팀전 · 점수 입력 후 팀 뽑기 · 동점 배율 이월 · 버디 -1,000원 / 이글 -3,000원 · 1인 최대 30,000원':G.mode===2
     ?'홀당 1,000원 · 18홀 · 성적 보너스 반영 후 게임비 비율 배분'
     :'1등 0원 / 2등 1,000원 / 3등 2,000원 · 18홀 · 성적 보너스 반영 후 게임비 비율 배분';
 }
@@ -322,8 +335,12 @@ function showP(id){
 function startGame(){
   G.nm[0]=document.getElementById('p1name').value||'공창섭';
   G.nm[1]=document.getElementById('p2name').value||'이태석';
-  if(G.mode===3) G.nm[2]=document.getElementById('p3name').value||'이태석';
+  if(G.mode>=3) G.nm[2]=document.getElementById('p3name').value||'플레이어3';
+  if(G.mode===4) G.nm[3]=document.getElementById('p4name').value||'플레이어4';
+  G.teamFee=Number(document.getElementById('teamfee').value)||0;
+  if(G.mode===4 && (G.teamFee<0||G.teamFee%1000!==0)){alert('홀별 비용은 1,000원 단위로 입력하세요.');return;}
   G.gf=parseInt(document.getElementById('gf').value)||0;
+  if(G.mode===4&&(G.gf<0||G.gf%1000!==0||G.gf>30000)){alert('4인 팀전의 인당 게임비는 0~30,000원, 1,000원 단위로 입력하세요.');return;}
   document.getElementById('topbar-sub').textContent=G.nm.slice(0,G.mode).join(' · ');
   G.mg=Array(G.mode).fill(0); // 멀리건 초기화
   initSc();G.cur=0;showP('pg-score');renderHole();saveState('pg-score');
@@ -339,6 +356,7 @@ function holeAmounts(row){
     if(a===b) return [G.u,G.u];       // 비김: 각 1,000원
     return a<b?[0,G.u*2]:[G.u*2,0];  // 이김: 0원, 짐: 2,000원
   }
+  if(G.mode===4) return teamHoleAmounts(G.sc.indexOf(row));
   // 3인: 전원동타=각u, 공동1등2명=0/0/2u, 1등1명공동2등=0/u/u, 1/2/3등=0/u/2u
   let [a,b,c]=row;
   if(a===b&&b===c) return [G.u,G.u,G.u];
@@ -349,6 +367,68 @@ function holeAmounts(row){
   return row.map(v=>sorted.indexOf(v)*G.u);
 }
 
+
+/* 4인 팀전: 각 홀 점수 입력 후 팀 추첨, 동점은 다음 홀로 배율 이월 */
+function teamHoleAmounts(i){
+  if(i<0||!G.draws?.[i]||G.sc[i].some(v=>v===null))return null;
+  let a=G.draws[i].a,b=[0,1,2,3].filter(p=>!a.includes(p));
+  let sa=a.reduce((x,p)=>x+G.sc[i][p],0),sb=b.reduce((x,p)=>x+G.sc[i][p],0);
+  if(sa===sb)return [0,0,0,0];
+  let mult=1;
+  for(let j=i-1;j>=0;j--){if(!G.draws[j]||G.sc[j].some(v=>v===null))break;
+    let x=G.draws[j].a,y=[0,1,2,3].filter(p=>!x.includes(p));
+    if(x.reduce((v,p)=>v+G.sc[j][p],0)!==y.reduce((v,p)=>v+G.sc[j][p],0))break;
+    mult++;
+  }
+  let losers=sa<sb?b:a;
+  return [0,1,2,3].map(p=>losers.includes(p)?G.teamFee*mult:0);
+}
+function drawTeam(){
+  if(G.sc[G.cur].some(v=>v===null)){alert('4명의 점수를 모두 입력한 뒤 팀을 뽑아 주세요.');return;}
+  if(G.draws[G.cur]&&!confirm('이 홀의 팀을 다시 뽑으면 정산이 변경됩니다. 다시 뽑을까요?'))return;
+  const pairs=[[0,1],[0,2],[0,3]];
+  let arr=new Uint32Array(1);
+  if(window.crypto?.getRandomValues)window.crypto.getRandomValues(arr);
+  else arr[0]=Math.floor(Math.random()*4294967296);
+  G.draws[G.cur]={a:pairs[arr[0]%3]};
+  for(let j=G.cur+1;j<G.h;j++)G.draws[j]=null;
+  renderHole();saveState();
+}
+function renderTeamDraw(){
+  let el=document.getElementById('team-draw-area');
+  if(G.mode!==4){el.style.display='none';return;}
+  el.style.display='block';
+  let d=G.draws?.[G.cur];
+  let h='<button class="btn-full" type="button" onclick="drawTeam()">🎲 '+(d?'팀 다시 뽑기':'팀 뽑기')+'</button>';
+  if(d){let a=d.a,b=[0,1,2,3].filter(p=>!a.includes(p)),row=G.sc[G.cur];
+    let sa=a.reduce((v,p)=>v+row[p],0),sb=b.reduce((v,p)=>v+row[p],0);
+    let aResult=sa===sb?'동점':sa<sb?'승':'패';
+    let bResult=sa===sb?'동점':sb<sa?'승':'패';
+    let resultStyle=v=>v==='승'?'color:#d43b3b;':v==='패'?'color:#2874c7;':'color:#64748b;';
+    h+='<div class="ibox" style="margin-top:8px;line-height:1.8;">'
+      +'A팀 '+a.map(p=>G.nm[p]).join(' + ')+' ('+dv(sa)+') <b style="'+resultStyle(aResult)+'">'+aResult+'</b><br>'
+      +'B팀 '+b.map(p=>G.nm[p]).join(' + ')+' ('+dv(sb)+') <b style="'+resultStyle(bResult)+'">'+bResult+'</b>'
+      +(sa===sb?'<br><b>다음 홀 배율 증가</b>':'')+'</div>';
+  }else h+='<div class="ibox" style="margin-top:8px;">4명 점수 입력 후 팀 뽑기를 눌러 승패를 확정하세요.</div>';
+  el.innerHTML=h;
+}
+function distribute4(weights,total){
+  let units=total/1000,cap=30;
+  if(!Number.isInteger(units)||units>120)return null;
+  let w=weights.map(v=>Math.max(0,v));if(w.every(v=>v===0))w=[1,1,1,1];
+  let result=[0,0,0,0];
+  for(let n=0;n<units;n++){
+    let eligible=[0,1,2,3].filter(i=>result[i]<cap);
+    if(!eligible.length)return null;
+    let sum=eligible.reduce((v,i)=>v+w[i],0);
+    let best=eligible[0];
+    if(sum>0){best=eligible.reduce((a,b)=>w[b]/sum-result[b]/(n+1)>w[a]/sum-result[a]/(n+1)?b:a);}
+    else best=eligible.reduce((a,b)=>result[b]<result[a]?b:a);
+    result[best]++;
+  }
+  return result.map(v=>v*1000);
+}
+
 /* ── 성적 보너스 ── */
 function calcScoreBonus(){
   // 성적 보너스만 (버디/이글/트리플)
@@ -357,6 +437,7 @@ function calcScoreBonus(){
     for(let p=0;p<G.mode;p++){
       let v=G.sc[i][p];
       if(v===null) continue;
+      if(G.mode===4){if(v===-1)bn[p]-=1000;else if(v<=-2)bn[p]-=3000;continue;}
       if(v===-1) bn[p]-=G.u;
       else if(v<=-2) bn[p]-=G.u*2;
       else if(v>=3) bn[p]+=G.u;
@@ -420,6 +501,12 @@ function calcFinal(){
       k=tot/posSum;
       x2=x1.map(v=>r1k(v*k));
     }
+  }
+
+  if(G.mode===4){
+    let four=distribute4(x1,tot);
+    x2=four||[0,0,0,0];
+    note=four?'team4':'invalid';
   }
 
   // 3인 추가 조정
@@ -487,7 +574,7 @@ function calcFinal(){
 
 /* ── 예상 정산 ── */
 function calcEst(){
-  let played=G.sc.filter(s=>s.every(v=>v!==null)).length;
+  let played=G.mode===4?G.draws.filter(Boolean).length:G.sc.filter(s=>s.every(v=>v!==null)).length;
   if(played===0) return null;
   return calcFinal().x2;
 }
@@ -497,6 +584,7 @@ function renderInputs(){
   let h='';
   const scores=totalScores();
   const est=calcEst();
+  const currentFees=calcFinal().x1; // 홀별 누적 비용 + 성적/멀리건 보너스, 비례 배분 전
   for(let p=0;p<G.mode;p++){
     let sel=G.sc[G.cur][p];
     let mgTotal=Number(G.mg?.[p])||0;
@@ -505,10 +593,11 @@ function renderInputs(){
       :'';
     let scoreText=G.sc.some(row=>row[p]!==null)?dv(scores[p]):'—';
     let costText=est?est[p].toLocaleString('ko-KR').replace(/,/g,'')+'원':'—';
+    let currentText=est?currentFees[p].toLocaleString('ko-KR').replace(/,/g,'')+'원':'—';
     h+='<div class="player-section">'
       +'<div class="player-header" style="gap:5px;">'
       +'<div class="av" style="width:24px;height:24px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;'+AV_STYLE[p]+'">P'+(p+1)+'</div>'
-      +'<span class="pname" style="font-size:clamp(11px,3.3vw,15px);white-space:nowrap;letter-spacing:-.4px;">'+G.nm[p]+' ('+scoreText+' / '+costText+')</span>'
+      +'<span class="pname" style="font-size:clamp(10px,3vw,14px);white-space:nowrap;letter-spacing:-.4px;min-width:0;">'+G.nm[p]+' ('+scoreText+' / '+costText+' / <span style="font-size:0.82em;font-weight:400;color:var(--txt2);">'+currentText+'</span>)</span>'
       +mgBtn
       +'</div><div class="score-btn-grid">';
     LV.forEach(lv=>{
@@ -557,7 +646,8 @@ function getRanks(amt){
 function renderVerd(){
   let row=G.sc[G.cur];
   let el=document.getElementById('verd');
-  if(row.some(v=>v===null)){el.innerHTML='';return;}
+  if(row.some(v=>v===null)||(G.mode===4&&!G.draws?.[G.cur])){el.innerHTML='';return;}
+  if(G.mode===4){let amt=holeAmounts(row);el.innerHTML='<span class="badge bd">'+(amt.every(v=>v===0)?'동점 · 다음 홀 배율 증가':'패배팀 각 '+Math.max(...amt).toLocaleString()+'원')+'</span>';return;}
   let amt=holeAmounts(row);
   let h='';
   if(G.mode===2){
@@ -603,11 +693,18 @@ function renderST(){
       +'<td style="color:'+(ic?'#1e293b':'#64748b')+';font-weight:'+(ic?'700':'400')+';">'+(ic?'▶ ':'')+(i+1)+'</td>';
     for(let p=0;p<G.mode;p++){
       let v=row[p];
-      h+='<td>'+(v===null?'<span style="color:#94a3b8;">—</span>':'<span class="sc-chip '+cc(v)+'">'+dv(v)+'</span>')+'</td>';
+      let teamBorder='';
+      if(G.mode===4&&v!==null&&G.draws?.[i]&&row.every(x=>x!==null)){
+        let a=G.draws[i].a,b=[0,1,2,3].filter(x=>!a.includes(x));
+        let sa=a.reduce((t,x)=>t+row[x],0),sb=b.reduce((t,x)=>t+row[x],0);
+        teamBorder=sa===sb?' team-tie-score':(a.includes(p)===(sa<sb)?' team-win-score':' team-lose-score');
+      }
+      h+='<td>'+(v===null?'<span style="color:#94a3b8;">—</span>':'<span class="sc-chip '+cc(v)+teamBorder+'">'+dv(v)+'</span>')+'</td>';
     }
     let rc='';
     if(amt){
-      if(G.mode===2){
+      if(G.mode===4){rc=G.draws?.[i]?(amt.every(v=>v===0)?'동점':'승/패'):'';}
+      else if(G.mode===2){
         let w=amt[0]===0?0:1;
         rc=amt[0]===amt[1]?'<span style="font-size:11px;color:#888;">무</span>':'<span style="font-size:11px;font-weight:600;color:#27500A;">'+G.nm[w][0]+'승</span>';
       } else {
@@ -628,16 +725,16 @@ function cycleMulligan(p){
   saveState();
 }
 
-function setSc(p,v){G.sc[G.cur][p]=v;renderHole();saveState();}
+function setSc(p,v){if(G.mode===4&&G.draws?.[G.cur]){G.draws[G.cur]=null;for(let i=G.cur+1;i<G.h;i++)G.draws[i]=null;}G.sc[G.cur][p]=v;renderHole();saveState();}
 function renderHole(){
   document.getElementById('htitle').textContent='홀 '+(G.cur+1)+' / '+G.h;
-  renderInputs();renderSD();renderVerd();renderST();renderRun();
+  renderInputs();renderTeamDraw();renderSD();renderVerd();renderST();renderRun();
 }
 
 function renderRun(){
   let raw=calcRaw(), sb=calcScoreBonus(), mb=calcMgBonus();
   let bn=sb.map((v,i)=>v+mb[i]);
-  let played=G.sc.filter(s=>s.every(v=>v!==null)).length;
+  let played=G.mode===4?G.draws.filter(Boolean).length:G.sc.filter(s=>s.every(v=>v!==null)).length;
   let x1=raw.map((r,i)=>r+bn[i]);
   let est=calcEst();
   let h='<div style="font-size:12px;color:#64748b;margin-bottom:10px;">'+played+'홀 완료 · 남은 '+(G.h-played)+'홀</div>';
@@ -681,7 +778,7 @@ function nextH(){if(G.cur<G.h-1){G.cur++;renderHole();saveState();}}
 function renderResult(){
   let {raw,bn,x1,x2,k,note,gasAdj,capAdj,gasIdx,roundAdj}=calcFinal();
   let sgrid=document.getElementById('scards');
-  sgrid.className='sgrid '+(G.mode===2?'sgrid-2':'sgrid-3');
+  sgrid.className='sgrid '+(G.mode===2||G.mode===4?'sgrid-2':'sgrid-3');
   sgrid.innerHTML=G.nm.slice(0,G.mode).map((nm,i)=>
     '<div class="met"><div class="mlabel">'+nm+'</div>'
     +'<div class="mval" style="color:#A32D2D;">−'+x2[i].toLocaleString()+'원</div>'
@@ -690,6 +787,7 @@ function renderResult(){
   let ch='';
   // 1단계
   ch+='<div class="cstep"><div class="cstep-title">1단계 · 홀 기본금액 합산</div>';
+  if(G.mode===4)ch+='<div style="font-size:11px;color:#64748b;">매 홀 추첨 팀전 · 동점 시 배율 이월 · 패배팀 각 홀별 설정액 × 배율</div>';
   if(G.mode===3) ch+='<div style="font-size:11px;color:#94a3b8;margin-bottom:5px;">1등 0원 / 2등 '+G.u.toLocaleString()+'원 / 3등 '+(G.u*2).toLocaleString()+'원 (동순위 적용)</div>';
   for(let i=0;i<G.mode;i++) ch+='<div class="crow"><span>'+G.nm[i]+'</span><span>'+raw[i].toLocaleString()+'원</span></div>';
   ch+='</div>';
@@ -705,8 +803,8 @@ function renderResult(){
       else if(v!==null&&v>=3) tc++;
     }
     if(bc>0) parts.push('버디 '+bc+'개 −'+(bc*G.u).toLocaleString()+'원');
-    if(ec>0) parts.push('이글+ '+ec+'개 −'+(ec*G.u*2).toLocaleString()+'원');
-    if(tc>0) parts.push('트리플+ '+tc+'개 +'+(tc*G.u).toLocaleString()+'원');
+    if(ec>0) parts.push('이글+ '+ec+'개 −'+(ec*(G.mode===4?3000:G.u*2)).toLocaleString()+'원');
+    if(tc>0&&G.mode!==4) parts.push('트리플+ '+tc+'개 +'+(tc*G.u).toLocaleString()+'원');
     if(G.useMulligan){
       let count=Number(G.mg?.[i])||0;
       let mgCost=count>=2?(count-1)*G.u:0;
@@ -721,6 +819,7 @@ function renderResult(){
   // 3단계
   ch+='<div class="cstep"><div class="cstep-title">3단계 · 전체 게임비 비율 배분 (천원 단위 반올림)</div>';
   ch+='<div class="crow"><span>목표 총액</span><span>'+(G.gf*G.mode).toLocaleString()+'원 (인당 '+G.gf.toLocaleString()+'원×'+G.mode+')</span></div>';
+  if(note==='team4')ch+='<div class="crow"><span>4인 팀전</span><span>천원 단위 · 1인 30,000원 상한</span></div>';
   if(note==='normal'&&k) ch+='<div class="crow"><span>배율 k</span><span>'+k.toFixed(2)+'배</span></div>';
   if(note==='partial') ch+='<div class="crow" style="color:#A32D2D;"><span>일부 0 이하 → 양수 비율 배분</span><span></span></div>';
   if(note==='even') ch+='<div class="crow"><span>전원 0 이하 → 균등 배분</span><span></span></div>';
@@ -783,7 +882,8 @@ function renderResult(){
     let amt=holeAmounts(row);
     let scores=G.nm.slice(0,G.mode).map((nm,p)=>nm[0]+':'+ls(row[p])).join(' ');
     let result='';
-    if(G.mode===2){
+    if(G.mode===4){result='<span class="badge bd">'+(amt.every(v=>v===0)?'동점':'패배 '+Math.max(...amt).toLocaleString()+'원')+'</span>'; }
+    else if(G.mode===2){
       let w=amt[0]===0?0:1;
       result=amt[0]===amt[1]?'<span class="badge bd">무</span>':'<span class="badge bw">'+G.nm[w]+'</span>';
     } else {
@@ -816,6 +916,10 @@ function loadState(){
     if(!saved||!saved.G) return false;
     G=saved.G;
     if(G.gasFee===undefined) G.gasFee=-1;
+    if(!Array.isArray(G.nm))G.nm=[];
+    G.nm[3]=G.nm[3]||'플레이어4';
+    G.teamFee=Number(G.teamFee)||1000;
+    if(!Array.isArray(G.draws)||G.draws.length!==G.h)G.draws=Array(G.h).fill(null);
     if(G.useMulligan===undefined) G.useMulligan=false;
     // 기존 홀별 저장 데이터를 플레이어별 누적 횟수로 이전
     if(Array.isArray(G.mg)&&Array.isArray(G.mg[0])){
@@ -830,6 +934,8 @@ function loadState(){
     document.getElementById('p1name').value=G.nm[0];
     document.getElementById('p2name').value=G.nm[1];
     document.getElementById('p3name').value=G.nm[2]||'이태석';
+    document.getElementById('p4name').value=G.nm[3];
+    document.getElementById('teamfee').value=G.teamFee;
     document.getElementById('gf').value=G.gf;
     updateGasUI();
     updI();
