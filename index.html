@@ -63,7 +63,8 @@ body{overflow-x:hidden;}
 .gas-btn.on{background:var(--blue-bg);border-color:var(--blue);}
 .player-section{margin-bottom:12px;}
 .player-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.pname{font-size:15px;font-weight:700;color:var(--txt);}
+.pname{font-size:clamp(12px,3.3vw,15px);font-weight:700;color:var(--txt);line-height:1.25;white-space:nowrap;letter-spacing:-.25px;min-width:0;}
+.pname-current{font-size:.9em;font-weight:600;color:var(--txt2);}
 .score-btn-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
 .scbtn{padding:5px 2px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);cursor:pointer;text-align:center;line-height:1.3;font-family:inherit;}
 .scbtn:active{transform:scale(.95);}
@@ -597,7 +598,7 @@ function renderInputs(){
     h+='<div class="player-section">'
       +'<div class="player-header" style="gap:5px;">'
       +'<div class="av" style="width:24px;height:24px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;'+AV_STYLE[p]+'">P'+(p+1)+'</div>'
-      +'<span class="pname" style="font-size:clamp(10px,3vw,14px);white-space:nowrap;letter-spacing:-.4px;min-width:0;">'+G.nm[p]+' ('+scoreText+' / '+costText+' / <span style="font-size:0.82em;font-weight:400;color:var(--txt2);">'+currentText+'</span>)</span>'
+      +'<span class="pname">'+G.nm[p]+' ('+scoreText+' / '+costText+' / <span class="pname-current">'+currentText+'</span>)</span>'
       +mgBtn
       +'</div><div class="score-btn-grid">';
     LV.forEach(lv=>{
